@@ -1,0 +1,676 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+% \usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+% \usecolortheme{albatross}
+% \usecolortheme{beaver}
+% \usecolortheme{beetle}
+% \usecolortheme{crane}
+% \usecolortheme{dolphin}
+% \usecolortheme{dove}
+% \usecolortheme{fly}
+% \usecolortheme{lily}
+% \usecolortheme{orchid}
+% \usecolortheme{rose}
+% \usecolortheme{seagull}
+% \usecolortheme{seahorse}
+\usecolortheme{whale}
+% \usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Transações]{Transações de SGBDs} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Ramon Duarte de Melo} % Your name
+\institute[UFRJ] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Universidade Federal do Rio de Janeiro \\ % Your institution for the title page
+\medskip
+\textit{ramonduarte@poli.ufrj.br} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Sumário} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Introdução} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+\subsection{Definições} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+\frametitle{Glossário}
+\begin{itemize}
+    \item Lock (ou cadeado): estrutura de dados implementada atomicamente pelo sistema operacional que oferece controle de acesso concorrente a um determinado recurso.
+    \item Requisição de lock: feitas pela aplicação ao lock manager (gerenciador de concorrência). A transação fica bloqueada até que receba o sinal de cadeado concedido.
+    \item Cadeado exclusivo (X-lock): permite a livre leitura e/ou escrita em modo exclusivo.
+    \item Cadeado compartilhado (S-lock): permite somente a leitura, em modo concorrente a outras transações de leitura.
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+
+\subsection{Locks exclusivos e commpartilhados}
+\begin{frame}
+    \frametitle{Matriz de compatibilidade de cadeados}
+    \begin{table}
+    \begin{tabular}{l l l}
+    \toprule
+    \textbf{} & \textbf{S-lock} & \textbf{X-lock}\\
+    \midrule
+    S-lock & :greencheck: & :redx: \\
+    X-lock & :redx: & :redx: \\
+    \bottomrule
+    \end{tabular}
+    \caption{Cadeados somente-leitura toleram acesso concorrente.}
+    \end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Conversões de cadeados} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+\frametitle{Upgrades e downgrades}
+\begin{itemize}
+    % TODO: upgrade 2018-11-15 20:15:25
+    \item Upgrade: lock S para lock X
+    % TODO: downrade 2018-11-15 20:15:25
+    \item downgrade: lock X para lock S
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{2PL: Two-Phase Locking}
+\begin{frame}
+    \frametitle{2PL: Two-Phase Locking}
+
+    Composto de duas fases sequenciais:
+
+    \begin{block}{Fase de Crescimento}
+        Etapa em que as transações requerem os cadeados ou upgrades. Nesta fase, as transações não podem liberar cadeados ou fazer downgrade de sua possessão.
+    \end{block}
+
+    \begin{block}{Fase de Retração}
+        Etapa em que as transações liberam os cadeados ou fazem downgrades. Nesta fase, as transações não podem requerer novos cadeados ou upgrades.
+    \end{block}
+
+    É um protocolo popular em sistemas distribuídos por promover serialização, que passa a ser baseada na ordem dos lock points (aquisição do último lock).
+
+    Ainda assim, do desenvolvedor é requerida a inserção manual das instruções de locking.
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{2PL: Desafios}
+
+Nem todos os cenários de conflito podem ser serializados através do 2PL. 
+
+\begin{block}{Exemplo 1}
+    % TODO: 2018-11-15 19:24:52
+\end{block}
+
+\begin{block}{Exemplo 2}
+    % TODO: 2018-11-15 19:25:08
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Implementação}
+
+O cérebro do 2PL é um processo chamado "gerenciador de concorrência" ("lock manager"), para o qual as aplicações requerem locks e enviam releases antes e depois de executarem transações.
+
+O gerenciador de concorrência deve responder a todas as aplicações com uma destas orientações:
+
+\begin{itemize}
+    \item Confirmação do lock: a transação está autorizada a prosseguir.
+    \item Rollback: a transação não poderá prosseguir e a aplicação deverá desfazê-la.
+\end{itemize}
+
+Para tanto, o gerenciador mantém uma tabela de cadeados (lock table), uma estrutura de dados especial que registra cadeados garantidos, negados e pendentes.
+
+A tabela é mantida em memória física (RAM) cmo uma tabela hash indexada pelo nome do recurso cujo acesso foi requisitado.
+\end{frame}
+
+%------------------------------------------------
+
+
+\begin{frame}
+    \frametitle{Tabela de cadeados}
+    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+    
+    \column{.45\textwidth} % Left column and width
+        % TODO: imagem da lock table 2018-11-15 20:33:33
+    
+    \column{.5\textwidth} % Right column and width
+    
+        \textbf{Heading}
+        \begin{enumerate}
+        \item Novas requisições são adicionadas ao fim da fila (uma para cada recurso), e concedidas uma vez que sejam compatíveis com os cadeados em concessão.
+        \item Liberações de cadeados (releases) provocam a eliminação da requisição da fila e imediata reavaliação das pendentes.
+        \item Se um comando rollback ou abort é emitido, todos os cadeados (concedidos ou pendentes) da transação são descartados.
+        \end{enumerate}
+        \end{columns}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{2PL: Desafios}
+
+Ainda assim, 2PL oferece uma alternativa de serialização de conflitos mesmo na ausência de maiores informações. 
+
+\begin{itemize}
+    \item Caso haja uma transação Ti que não use 2PL, é possível coordenar as transações Tj de forma que, para cada par (Ti, Tj), não haja conflitos de serialização.
+    % \item TODO: exemplo 2 2018-11-15 19:27:21
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Aquisição automática de locks}
+\begin{example}[Operação de leitura do recurso R]
+\begin{verbatim}
+    resource R;
+    if (this->getLock(R)) {
+        this->read(R);
+    } else {
+        if !(isXLocked(R)) {
+            this->getSLock(R);
+            this->read(R);
+        }
+    }
+    this->commit();
+    this->release(R);
+
+\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Aquisição automática de locks}
+\begin{example}[Operação de escrita do recurso R]
+\begin{verbatim}
+    resource R;
+    if (this->getXLock(R)) {
+        this->write(R);
+    } else {
+        if !(xLocked(R)) {
+            if (this->hasSLock(R)) {
+                this->upgradeToXLock(R);
+            } else {
+                this->getXLock(R);
+            }
+            this->read(R);
+        }
+    }
+    this->commit();
+    this->release(R);
+
+\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Multiple Columns}
+\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+\column{.45\textwidth} % Left column and width
+\textbf{Heading}
+\begin{enumerate}
+\item Statement
+\item Explanation
+\item Example
+\end{enumerate}
+
+\column{.5\textwidth} % Right column and width
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+
+\end{columns}
+\end{frame}
+
+%------------------------------------------------
+\section{Q9: Protocolos Lock-based}
+% Discuta os protocolos de controle de concorrência baseados em “Locks”,
+% mencionando em detalhes o protocolo “Two-Phase Locking (2PL)”,
+% mencionando Shared/Exclusive (or Read/Write) locks,
+% conversão de locks (upgrade/downgrade), lock manager, lock table,
+% questões de granularidade do lock etc.
+% Apresente as vantagens e desvantagens do protocolo de controle de concorrência 2PL,
+% mencionando como ele garante schedules seriais
+% e como evita os problemas da concorrência.
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Table}
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
+\midrule
+Treatment 1 & 0.0003262 & 0.562 \\
+Treatment 2 & 0.0015681 & 0.910 \\
+Treatment 3 & 0.0009271 & 0.296 \\
+\bottomrule
+\end{tabular}
+\caption{Table caption}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Verbatim}
+\begin{example}[Theorem Slide Code]
+\begin{verbatim}
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Figure}
+Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
+%\begin{figure}
+%\includegraphics[width=0.8\linewidth]{test}
+%\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Citation}
+An example of the \verb|\cite| command to cite within the presentation:\\~
+
+This statement requires citation \cite{p1}.
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{p1} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Q10: Variantes do 2PL}
+% Discuta as variantes 2PL Normal, Conservativa, Estrita e Rigorosa.
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Table}
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
+\midrule
+Treatment 1 & 0.0003262 & 0.562 \\
+Treatment 2 & 0.0015681 & 0.910 \\
+Treatment 3 & 0.0009271 & 0.296 \\
+\bottomrule
+\end{tabular}
+\caption{Table caption}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Verbatim}
+\begin{example}[Theorem Slide Code]
+\begin{verbatim}
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Figure}
+Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
+%\begin{figure}
+%\includegraphics[width=0.8\linewidth]{test}
+%\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Citation}
+An example of the \verb|\cite| command to cite within the presentation:\\~
+
+This statement requires citation \cite{p1}.
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{p1} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Q11: Problemas e Prevenção}
+% Explique e exemplifique os problemas de “deadlock” e “starvation“
+% e os protocolos para as suas prevenções, mencionando detecção
+% e recuperação de deadlocks e esquema baseados em timestamps
+% ("wait-die" e "wound-wait").
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Table}
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
+\midrule
+Treatment 1 & 0.0003262 & 0.562 \\
+Treatment 2 & 0.0015681 & 0.910 \\
+Treatment 3 & 0.0009271 & 0.296 \\
+\bottomrule
+\end{tabular}
+\caption{Table caption}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Verbatim}
+\begin{example}[Theorem Slide Code]
+\begin{verbatim}
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Figure}
+Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
+%\begin{figure}
+%\includegraphics[width=0.8\linewidth]{test}
+%\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Citation}
+An example of the \verb|\cite| command to cite within the presentation:\\~
+
+This statement requires citation \cite{p1}.
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{p1} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Q12: Métodos de Acesso Indexado}
+% Discuta como os métodos de controle de concorrência baseado em locks
+% consideram o uso de métodos de acesso indexados,
+% comentando o nível de granularidade do lock através do índice;
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Table}
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
+\midrule
+Treatment 1 & 0.0003262 & 0.562 \\
+Treatment 2 & 0.0015681 & 0.910 \\
+Treatment 3 & 0.0009271 & 0.296 \\
+\bottomrule
+\end{tabular}
+\caption{Table caption}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Verbatim}
+\begin{example}[Theorem Slide Code]
+\begin{verbatim}
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Figure}
+Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
+%\begin{figure}
+%\includegraphics[width=0.8\linewidth]{test}
+%\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Citation}
+An example of the \verb|\cite| command to cite within the presentation:\\~
+
+This statement requires citation \cite{p1}.
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{p1} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 

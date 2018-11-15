@@ -1,0 +1,10 @@
+\babel@toc {brazil}{}
+\beamer@sectionintoc {1}{Introdu\IeC {\c c}\IeC {\~a}o}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Defini\IeC {\c c}\IeC {\~o}es}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Locks exclusivos e commpartilhados}{4}{0}{1}
+\beamer@subsectionintoc {1}{3}{Convers\IeC {\~o}es de cadeados}{5}{0}{1}
+\beamer@subsectionintoc {1}{4}{2PL: Two-Phase Locking}{6}{0}{1}
+\beamer@sectionintoc {2}{Q9: Protocolos Lock-based}{14}{0}{2}
+\beamer@sectionintoc {3}{Q10: Variantes do 2PL}{21}{0}{3}
+\beamer@sectionintoc {4}{Q11: Problemas e Preven\IeC {\c c}\IeC {\~a}o}{28}{0}{4}
+\beamer@sectionintoc {5}{Q12: M\IeC {\'e}todos de Acesso Indexado}{35}{0}{5}
