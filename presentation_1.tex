@@ -125,6 +125,7 @@ Universidade Federal do Rio de Janeiro \\ % Your institution for the title page
     \item Requisição de lock: feitas pela aplicação ao lock manager (gerenciador de concorrência). A transação fica bloqueada até que receba o sinal de cadeado concedido.
     \item Cadeado exclusivo (X-lock): permite a livre leitura e/ou escrita em modo exclusivo.
     \item Cadeado compartilhado (S-lock): permite somente a leitura, em modo concorrente a outras transações de leitura.
+    \item Deadlock: situação em que conflitos de acesso previnem as transações envolvidas de chegarem a um acordo em que ambas possam prosseguir.
 \end{itemize}
 \end{frame}
 
@@ -250,6 +251,91 @@ Ainda assim, 2PL oferece uma alternativa de serialização de conflitos mesmo na
     \item Caso haja uma transação Ti que não use 2PL, é possível coordenar as transações Tj de forma que, para cada par (Ti, Tj), não haja conflitos de serialização.
     % \item TODO: exemplo 2 2018-11-15 19:27:21
 \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{2PL: Desafios}
+
+2PL não previne a existência de deadlocks. Um exemplo clássico é o lock cruzado, em que múltiplas transações necessitam do mesmo conjunto de recursos e cada uma segura o lock de um subconjunto dele, impedindo as demais de prosseguirem.
+
+2PL prevê apenas uma forma de resolução de tais conflitos: rollback de ao menos uma das transações e descarte de suas permissões especiais.
+
+Por conta disto, há a possibilidade de "starvation", cenário em que uma transação que necessita de acesso de escrita é repetidamente desfeita por conta da sequência de permissões de leitura concedidas sobre o mesmo recurso a outras transações.
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{2PL: Desafios}
+
+Deadlocks são inevitáveis em qualquer protocolo. O papel do gerenciador de concorrência é garantir a integridade, a consistência  e a recuperação do sistema caso eles ocorram.
+
+Uma das consequências a serem evitadas é o rollback em cascata. Algumas estratégias para evitá-lo são:
+
+\begin{itemize}
+    \item 2PL estrito: cada transação deve segurar seus cadeados exclusivos até que complete com sucesso ou aborte.
+    \item 2PL rigoroso: cada transação deve segurar todos os seus cadeados (exclusivos ou commpartilhados) até que complete ou aborte. As transações passam a ser serializadas pela ordem de commit.
+
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{2PL: Desafios}
+
+Outras estratégias de prevenção de deadlocks incluem:
+
+\begin{itemize}
+    \item Predeclaração: cada transação deve requerer todos os cadeados necessários antes mesmo de iniciar sua execução.
+    \item Ordenação parcial: cada transação só pode enviar requisições numa ordem parcial preestabelecida.
+    \item timestamps não-preemptivos (wait-die): transações antigas podem esperar por liberações de recursos utilizados por transações posteriores, mas as recentes são sempre desfeitas. O risco de starvation é alto porque uma transação pode tomar rollback repetidamente.
+    \item timestamps preemptivos (wound-wait): transações forçam rollback das transações posteriores, mas recentes podem esperar pelos recursos. O risco de starvation é significativamente menor.
+    \item timeout: se o lock não for concedido dentro de um certo intervalo de tempo, a transação é desfeita. Simples de implementar, porém a determinação do intervalo adequado é crucial para seu bom funcionamento.
+\end{itemize}
+
+Em ambos os casos de estratégias baseadas em timestamps, a timestamp original da transação é mantida caso ela seja executada novamente, de forma a prevenir starvation.
+\end{frame}
+
+%------------------------------------------------
+\subsubsection{Detecção de deadlocks}
+\begin{frame}
+\frametitle{Detecção de deadlocks}
+
+Os algoritmos mais eficazes de detecção de deadlocks são os baseados no problema de escalonamento de tarefas (jobshop scheduling problem ou JSSP).
+
+O problema pode ser descrito por um conjunto de n transações fJig1≤j≤n que requerem um conjunto de m recursos fMrg1≤r≤m.
+
+Cada transação tem uma sequência própria de recursos a serem processados.
+
+O processamento da transação Jj na máquina Mr é chamada de operação Ojr.
+
+A operação Ojr requer o uso exclusivo de Mr por uma duração ininterrupta pjr, que é seu tempo de processamento.
+
+Um escalonamento eficaz é um conjunto de operações sequenciais fcjrg1≤j≤n;1≤r≤m que satisfazem estes critérios.
+
+Caso haja um ciclo no escalonamento, isto é, <se existe um ciclo>, então há um estado de deadlock presente no escalonamento que precisa ser endereçado.
+
+O algoritmo deve buscar por ciclos frequentemente, para evitar rollbacks em cascata.
+
+\end{frame}
+
+%------------------------------------------------
+\subsubsection{Detecção de deadlocks}
+\begin{frame}
+\frametitle{Detecção de deadlocks}
+
+Quando um deadlock é detectado, alguma transação deverá ser desfeita (rolled back) para quebrá-lo. A seleção da vítima deve ser feita de forma a minimizar o prejuízo de tempo.
+
+A implementação mais simples é a do rollback total, que aborta a transação e a desfaz completamente. Porém, esta operação pode ser muito custosa.
+
+Uma implementação mais complicada, porém mais eficiente, é o rollback parcial até que o deadlock seja desfeito.
+
+Se a mesma transação é sempre escolhida como vítima, há o risco de starvation.
+
 \end{frame}
 
 %------------------------------------------------
