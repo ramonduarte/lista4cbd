@@ -1,4 +1,20 @@
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
+\begin{example}[Operação de escrita do recurso R]
+    \begin{verbatim}
+        resource R;
+        if (this->getXLock(R)) {
+            this->write(R);
+        } else {
+            if !(xLocked(R)) {
+                if (this->hasSLock(R)) {
+                    this->upgradeToXLock(R);
+                } else {
+                    this->getXLock(R);
+                }
+                this->read(R);
+            }
+        }
+        this->commit();
+        this->release(R);
 
-This statement requires citation \cite{p1}.
+    \end{verbatim}
+    \end{example}

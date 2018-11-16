@@ -40,7 +40,7 @@
 %\usetheme{Ilmenau}
 %\usetheme{JuanLesPins}
 %\usetheme{Luebeck}
-% \usetheme{Madrid}
+\usetheme{Madrid}
 %\usetheme{Malmoe}
 %\usetheme{Marburg}
 %\usetheme{Montpellier}
@@ -48,7 +48,7 @@
 %\usetheme{Pittsburgh}
 %\usetheme{Rochester}
 %\usetheme{Singapore}
-\usetheme{Szeged}
+% \usetheme{Szeged}
 %\usetheme{Warsaw}
 
 % As well as themes, the Beamer class has a number of color themes
@@ -80,6 +80,7 @@
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage[brazil]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{amssymb}
 
 
 %----------------------------------------------------------------------------------------
@@ -88,24 +89,24 @@
 
 \title[Transações]{Transações de SGBDs} % The short title appears at the bottom of every slide, the full title is only on the title page
 
-\author{Ramon Duarte de Melo} % Your name
-\institute[UFRJ] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
-{
-Universidade Federal do Rio de Janeiro \\ % Your institution for the title page
-\medskip
-\textit{ramonduarte@poli.ufrj.br} % Your email address
-}
-\date{\today} % Date, can be changed to a custom date
+    \author{Ramon Duarte de Melo} % Your name
+    \institute[UFRJ] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+    {
+    Universidade Federal do Rio de Janeiro \\ % Your institution for the title page
+    \medskip
+    \textit{ramonduarte@poli.ufrj.br} % Your email address
+    }
+    \date{\today} % Date, can be changed to a custom date
 
-\begin{document}
+    \begin{document}
 
-\begin{frame}
-\titlepage % Print the title page as the first slide
-\end{frame}
+    \begin{frame}
+        \titlepage % Print the title page as the first slide
+    \end{frame}
 
-\begin{frame}
-\frametitle{Sumário} % Table of contents slide, comment this block out to remove it
-\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+    \begin{frame}
+        \frametitle{Sumário} % Table of contents slide, comment this block out to remove it
+        \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 \end{frame}
 
 %----------------------------------------------------------------------------------------
@@ -120,291 +121,35 @@ Universidade Federal do Rio de Janeiro \\ % Your institution for the title page
 
 \begin{frame}
 \frametitle{Glossário}
-\begin{itemize}
-    \item Lock (ou cadeado): estrutura de dados implementada atomicamente pelo sistema operacional que oferece controle de acesso concorrente a um determinado recurso.
-    \item Requisição de lock: feitas pela aplicação ao lock manager (gerenciador de concorrência). A transação fica bloqueada até que receba o sinal de cadeado concedido.
-    \item Cadeado exclusivo (X-lock): permite a livre leitura e/ou escrita em modo exclusivo.
-    \item Cadeado compartilhado (S-lock): permite somente a leitura, em modo concorrente a outras transações de leitura.
-    \item Deadlock: situação em que conflitos de acesso previnem as transações envolvidas de chegarem a um acordo em que ambas possam prosseguir.
-\end{itemize}
-\end{frame}
-
-%------------------------------------------------
-
-
-\subsection{Locks exclusivos e commpartilhados}
-\begin{frame}
-    \frametitle{Matriz de compatibilidade de cadeados}
-    \begin{table}
-    \begin{tabular}{l l l}
-    \toprule
-    \textbf{} & \textbf{S-lock} & \textbf{X-lock}\\
-    \midrule
-    S-lock & :greencheck: & :redx: \\
-    X-lock & :redx: & :redx: \\
-    \bottomrule
-    \end{tabular}
-    \caption{Cadeados somente-leitura toleram acesso concorrente.}
-    \end{table}
-\end{frame}
-
-%------------------------------------------------
-
-\subsection{Conversões de cadeados} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
-
-\begin{frame}
-\frametitle{Upgrades e downgrades}
-\begin{itemize}
-    % TODO: upgrade 2018-11-15 20:15:25
-    \item Upgrade: lock S para lock X
-    % TODO: downrade 2018-11-15 20:15:25
-    \item downgrade: lock X para lock S
-\end{itemize}
-\end{frame}
-
-%------------------------------------------------
-
-\subsection{2PL: Two-Phase Locking}
-\begin{frame}
-    \frametitle{2PL: Two-Phase Locking}
-
-    Composto de duas fases sequenciais:
-
-    \begin{block}{Fase de Crescimento}
-        Etapa em que as transações requerem os cadeados ou upgrades. Nesta fase, as transações não podem liberar cadeados ou fazer downgrade de sua possessão.
-    \end{block}
-
-    \begin{block}{Fase de Retração}
-        Etapa em que as transações liberam os cadeados ou fazem downgrades. Nesta fase, as transações não podem requerer novos cadeados ou upgrades.
-    \end{block}
-
-    É um protocolo popular em sistemas distribuídos por promover serialização, que passa a ser baseada na ordem dos lock points (aquisição do último lock).
-
-    Ainda assim, do desenvolvedor é requerida a inserção manual das instruções de locking.
+    \begin{itemize}
+        % TODO: adicionar definição ampla de recurso no contexto de sistemas distribuídos 2018-11-16 14:22:34
+        \item Recurso: No entanto, dentro do contexto da disciplina de Bancos de Dados, consideraremos como um subconjunto qualquer de dados (um registro, ou uma coluna, ou mesmo toda a base de dados). 
+        \item Lock (ou cadeado): estrutura de dados implementada atomicamente pelo sistema operacional que oferece controle de acesso concorrente a um determinado recurso através da exclusão mútua.
+        \item Requisição de lock: feitas pela aplicação ao lock manager (gerenciador de concorrência). A transação fica bloqueada até que receba o sinal de cadeado concedido.
+    \end{itemize}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{2PL: Desafios}
-
-Nem todos os cenários de conflito podem ser serializados através do 2PL. 
-
-\begin{block}{Exemplo 1}
-    % TODO: 2018-11-15 19:24:52
-\end{block}
-
-\begin{block}{Exemplo 2}
-    % TODO: 2018-11-15 19:25:08
-\end{block}
-
+    \begin{itemize}
+        % TODO: adicionar definição ampla de recurso no contexto de sistemas distribuídos 2018-11-16 14:22:34
+        \item Cadeado binário: impede que qualquer outra aplicação tenha acesso concorrente ao recurso. Não são efetivamente utilizados em sistemas onde múltiplas aplicações executem simultaneamente.
+        \item Cadeado exclusivo (X-lock): permite a livre leitura e/ou escrita em modo exclusivo.
+        \item Cadeado compartilhado (S-lock): permite somente a leitura, em modo concorrente a outras transações de leitura.
+        \item Deadlock: situação em que conflitos de acesso previnem as transações envolvidas de chegarem a um acordo em que ambas possam prosseguir.
+    \end{itemize}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Implementação}
-
-O cérebro do 2PL é um processo chamado "gerenciador de concorrência" ("lock manager"), para o qual as aplicações requerem locks e enviam releases antes e depois de executarem transações.
-
-O gerenciador de concorrência deve responder a todas as aplicações com uma destas orientações:
-
-\begin{itemize}
-    \item Confirmação do lock: a transação está autorizada a prosseguir.
-    \item Rollback: a transação não poderá prosseguir e a aplicação deverá desfazê-la.
-\end{itemize}
-
-Para tanto, o gerenciador mantém uma tabela de cadeados (lock table), uma estrutura de dados especial que registra cadeados garantidos, negados e pendentes.
-
-A tabela é mantida em memória física (RAM) cmo uma tabela hash indexada pelo nome do recurso cujo acesso foi requisitado.
-\end{frame}
-
-%------------------------------------------------
-
-
-\begin{frame}
-    \frametitle{Tabela de cadeados}
-    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-    
-    \column{.45\textwidth} % Left column and width
-        % TODO: imagem da lock table 2018-11-15 20:33:33
-    
-    \column{.5\textwidth} % Right column and width
-    
-        \textbf{Heading}
-        \begin{enumerate}
-        \item Novas requisições são adicionadas ao fim da fila (uma para cada recurso), e concedidas uma vez que sejam compatíveis com os cadeados em concessão.
-        \item Liberações de cadeados (releases) provocam a eliminação da requisição da fila e imediata reavaliação das pendentes.
-        \item Se um comando rollback ou abort é emitido, todos os cadeados (concedidos ou pendentes) da transação são descartados.
-        \end{enumerate}
-        \end{columns}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{2PL: Desafios}
-
-Ainda assim, 2PL oferece uma alternativa de serialização de conflitos mesmo na ausência de maiores informações. 
-
-\begin{itemize}
-    \item Caso haja uma transação Ti que não use 2PL, é possível coordenar as transações Tj de forma que, para cada par (Ti, Tj), não haja conflitos de serialização.
-    % \item TODO: exemplo 2 2018-11-15 19:27:21
-\end{itemize}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{2PL: Desafios}
-
-2PL não previne a existência de deadlocks. Um exemplo clássico é o lock cruzado, em que múltiplas transações necessitam do mesmo conjunto de recursos e cada uma segura o lock de um subconjunto dele, impedindo as demais de prosseguirem.
-
-2PL prevê apenas uma forma de resolução de tais conflitos: rollback de ao menos uma das transações e descarte de suas permissões especiais.
-
-Por conta disto, há a possibilidade de "starvation", cenário em que uma transação que necessita de acesso de escrita é repetidamente desfeita por conta da sequência de permissões de leitura concedidas sobre o mesmo recurso a outras transações.
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{2PL: Desafios}
-
-Deadlocks são inevitáveis em qualquer protocolo. O papel do gerenciador de concorrência é garantir a integridade, a consistência  e a recuperação do sistema caso eles ocorram.
-
-Uma das consequências a serem evitadas é o rollback em cascata. Algumas estratégias para evitá-lo são:
-
-\begin{itemize}
-    \item 2PL estrito: cada transação deve segurar seus cadeados exclusivos até que complete com sucesso ou aborte.
-    \item 2PL rigoroso: cada transação deve segurar todos os seus cadeados (exclusivos ou commpartilhados) até que complete ou aborte. As transações passam a ser serializadas pela ordem de commit.
-
-\end{itemize}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{2PL: Desafios}
-
-Outras estratégias de prevenção de deadlocks incluem:
-
-\begin{itemize}
-    \item Predeclaração: cada transação deve requerer todos os cadeados necessários antes mesmo de iniciar sua execução.
-    \item Ordenação parcial: cada transação só pode enviar requisições numa ordem parcial preestabelecida.
-    \item timestamps não-preemptivos (wait-die): transações antigas podem esperar por liberações de recursos utilizados por transações posteriores, mas as recentes são sempre desfeitas. O risco de starvation é alto porque uma transação pode tomar rollback repetidamente.
-    \item timestamps preemptivos (wound-wait): transações forçam rollback das transações posteriores, mas recentes podem esperar pelos recursos. O risco de starvation é significativamente menor.
-    \item timeout: se o lock não for concedido dentro de um certo intervalo de tempo, a transação é desfeita. Simples de implementar, porém a determinação do intervalo adequado é crucial para seu bom funcionamento.
-\end{itemize}
-
-Em ambos os casos de estratégias baseadas em timestamps, a timestamp original da transação é mantida caso ela seja executada novamente, de forma a prevenir starvation.
-\end{frame}
-
-%------------------------------------------------
-\subsubsection{Detecção de deadlocks}
-\begin{frame}
-\frametitle{Detecção de deadlocks}
-
-Os algoritmos mais eficazes de detecção de deadlocks são os baseados no problema de escalonamento de tarefas (jobshop scheduling problem ou JSSP).
-
-O problema pode ser descrito por um conjunto de n transações fJig1≤j≤n que requerem um conjunto de m recursos fMrg1≤r≤m.
-
-Cada transação tem uma sequência própria de recursos a serem processados.
-
-O processamento da transação Jj na máquina Mr é chamada de operação Ojr.
-
-A operação Ojr requer o uso exclusivo de Mr por uma duração ininterrupta pjr, que é seu tempo de processamento.
-
-Um escalonamento eficaz é um conjunto de operações sequenciais fcjrg1≤j≤n;1≤r≤m que satisfazem estes critérios.
-
-Caso haja um ciclo no escalonamento, isto é, <se existe um ciclo>, então há um estado de deadlock presente no escalonamento que precisa ser endereçado.
-
-O algoritmo deve buscar por ciclos frequentemente, para evitar rollbacks em cascata.
-
-\end{frame}
-
-%------------------------------------------------
-\subsubsection{Detecção de deadlocks}
-\begin{frame}
-\frametitle{Detecção de deadlocks}
-
-Quando um deadlock é detectado, alguma transação deverá ser desfeita (rolled back) para quebrá-lo. A seleção da vítima deve ser feita de forma a minimizar o prejuízo de tempo.
-
-A implementação mais simples é a do rollback total, que aborta a transação e a desfaz completamente. Porém, esta operação pode ser muito custosa.
-
-Uma implementação mais complicada, porém mais eficiente, é o rollback parcial até que o deadlock seja desfeito.
-
-Se a mesma transação é sempre escolhida como vítima, há o risco de starvation.
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Aquisição automática de locks}
-\begin{example}[Operação de leitura do recurso R]
-\begin{verbatim}
-    resource R;
-    if (this->getLock(R)) {
-        this->read(R);
-    } else {
-        if !(isXLocked(R)) {
-            this->getSLock(R);
-            this->read(R);
-        }
-    }
-    this->commit();
-    this->release(R);
-
-\end{verbatim}
-\end{example}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Aquisição automática de locks}
-\begin{example}[Operação de escrita do recurso R]
-\begin{verbatim}
-    resource R;
-    if (this->getXLock(R)) {
-        this->write(R);
-    } else {
-        if !(xLocked(R)) {
-            if (this->hasSLock(R)) {
-                this->upgradeToXLock(R);
-            } else {
-                this->getXLock(R);
-            }
-            this->read(R);
-        }
-    }
-    this->commit();
-    this->release(R);
-
-\end{verbatim}
-\end{example}
-\end{frame}
-
-%------------------------------------------------
-
-
-\begin{frame}
-\frametitle{Multiple Columns}
-\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-
-\column{.45\textwidth} % Left column and width
-\textbf{Heading}
-\begin{enumerate}
-\item Statement
-\item Explanation
-\item Example
-\end{enumerate}
-
-\column{.5\textwidth} % Right column and width
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
-
-\end{columns}
+    \begin{itemize}
+        \item Granularidade: porção da base de dados que um único recurso representa.
+        \item Serialização: característica de um escalonamento reprodutível num cenário hipotético em que cada transação é mutuamente exclusiva e executada uma após a outra.
+        \item Recuperação: característica de um escalonamento que garante que nenhuma de suas transações exija um rollback uma vez que concluam com sucesso.
+        \item Recuperação estrita: característica de um escalonamento recuperável que prevê uma ordem estrita de rollbacks para transações abortadas.
+    \end{itemize}
 \end{frame}
 
 %------------------------------------------------
@@ -420,169 +165,307 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ul
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Table}
-\begin{table}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
+    \frametitle{Protocolos baseados em cadeados}
+        Para esta apresentação, consideraremos somente o conjunto de controles de concorrência baseados em cadeados (lock-based).
+
+        \n
+
+        Os conjuntos de controles de concorrência baseados em timestamps, híbridos ou otimistas (com validação pós-execução) serão desconsiderados.
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
+    Nestes protocolos, uma aplicação que deseja executar uma transação requisita uma permissão de leitura (lock S) ou leitura e escrita (lock X) ao gerenciador de concorrência e aguarda numa fila.
+
+    A concessão ocorrerá quando o cadeado solicitado for compatível com os demais cadeados (ativos e pendentes). 
+
+    Um sistema adequadamente projetado deve respeitar o princípio de justiça do acesso aos recursos, isto é, toda transação cujo acesso ao recurso seja permitido deve eventualmente obter o cadeado solicitado. 
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Locks exclusivos e compartilhados}
+
+\begin{frame}
+    \frametitle{Matriz de compatibilidade de cadeados}
+    \begin{table}
+    \begin{tabular}{l c c}
+        \toprule
+
+        \textbf{} & \textbf{lock S} & \textbf{lock X}\\
+
+        \midrule
+
+        \textbf{lock S} & \checkmark & \times \\
+        \textbf{lock X} & \times & \times \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Cadeados somente-leitura toleram acesso concorrente.}
+    \end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Conversões de cadeados} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+
+    \frametitle{Upgrades e downgrades}
+    \begin{block}{Upgrade: lock S para lock X}
+        Só é possível se não houver nenhuma outra transação com um cadeado exclusivo no recurso. Caso contrário, deverá entrar na fila e esperar que os cadeados exclusivos anteriores sejam liberados.
+    \end{block}
+    \begin{block}{Downgrade: lock X para lock S}
+        Não é necessária nenhuma checagem, pois se assume que o cadeado exclusivo seja único. A conversão é simples e pode ser realizada imediatamente.
+    \end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile]
+    O uso de cadeados por si só não é suficiente para garantir serialização.
+
+    \begin{example}[Operação de leitura simples]
+        \begin{verbatim}
+            resource Q, R;
+            if (this->getSLock(Q)) {
+                this->read(Q);
+                this->release(Q); }
+            // !!! DANGER ZONE !!!
+            if (this->getSLock(R)) {
+                this->read(R);
+                this->release(R); }
+            this->compute(Q + R);
+        \end{verbatim}
+    \end{example}
+
+    No exemplo acima, se Q ou R forem atualizados na transição entre a obtenção dos cadeados, o resultado será distinto do esperado pelo desenvolvedor.
+
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{2PL: Two-Phase Locking}
+\begin{frame}
+    \frametitle{2PL: Two-Phase Locking}
+
+    Este protocolo garante a produção de escalonamentos serializáveis (baseados na ordem dos lock points, que são as aquisições do último lock) e é composto de duas fases sequenciais:
+
+    \begin{block}{Fase de Crescimento}
+        Etapa em que as transações requerem os cadeados ou upgrades. Nesta fase, as transações não podem liberar cadeados ou fazer downgrade de sua possessão.
+    \end{block}
+
+    \begin{block}{Fase de Retração}
+        Etapa em que as transações liberam os cadeados ou fazem downgrades. Nesta fase, as transações não podem requerer novos cadeados ou upgrades.
+    \end{block}
+
+    Ainda assim, do desenvolvedor é requerida a inserção manual das instruções de locking.
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
+    \frametitle{Aquisição automática de locks}
+    \begin{example}[Operação de leitura do recurso R]
+    \begin{verbatim}
+        resource R;
+        if (this->getLock(R)) {
+            this->read(R);
+        } else {
+            if !(isXLocked(R)) {
+                this->getSLock(R);
+                this->read(R);
+            }
+        }
+        this->commit();
+        this->release(R);
+    
+    \end{verbatim}
+    \end{example}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
-
-This statement requires citation \cite{p1}.
+    \begin{example}[Operação de escrita do recurso R]
+    \begin{verbatim}
+        resource R;
+        if (this->getXLock(R)) {
+            this->write(R);
+        } else {
+            if !(xLocked(R)) {
+                if (this->hasSLock(R)) {
+                    this->upgradeToXLock(R);
+                } else {
+                    this->getXLock(R);
+                }
+                this->read(R);
+            }
+        }
+        this->commit();
+        this->release(R);
+    
+    \end{verbatim}
+    \end{example}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
+    \frametitle{Implementação}
+
+    O cérebro do 2PL é um processo chamado "gerenciador de concorrência" ("lock manager"), para o qual as aplicações requerem locks e enviam releases antes e depois de executarem transações.
+
+    O gerenciador de concorrência deve responder a todas as aplicações com uma destas orientações:
+
+    \begin{itemize}
+    \item Confirmação do lock: a transação está autorizada a prosseguir.
+    \item Rollback: a transação não poderá prosseguir e a aplicação deverá desfazê-la.
+    \end{itemize}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\Huge{\centerline{The End}}
+    Para tanto, o gerenciador mantém uma tabela de cadeados (lock table), uma estrutura de dados especial que registra cadeados garantidos, negados e pendentes.
+
+    A tabela é mantida em memória física (RAM) como uma tabela hash indexada pelo nome do recurso cujo acesso foi requisitado. Nela, são gravados também o identificador da transação, o tipo de cadeado requisitado e um ponteiro para a próxima requisição da fila.
+
+    \begin{table}
+    \begin{tabular}{l l l}
+    \toprule
+    \textbf{ID transação} & \textbf{Recurso ID} & \textbf{tipo de lock} & \textbf{ponteiro próx.}\\
+    \midrule
+    T1 & R122 & S & 0x009F03BC \\
+    T2 & T12 & S & 0x00AF13CD \\
+    T1 & C2349 & S & 0x00795CF1 \\
+    T3 & R122 & X & 0x00A01403 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Representação de uma tabela de cadeados.}
+    \end{table}
+
+    Para economizar espaço, o padrão é guardar somente o estado de recursos cujos cadeados têm requisições ativas ou pendentes. Assume-se que todo recurso ausente da tabela está disponivel.
+\end{frame}
+    
+%------------------------------------------------
+    
+    
+\begin{frame}
+    \frametitle{Tabela de cadeados (lock table)}
+    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+    
+    \column{.45\textwidth} % Left column and width
+        % TODO: imagem da lock table 2018-11-15 20:33:33
+    
+    \column{.5\textwidth} % Right column and width
+    
+        \textbf{Organização das requisições de cadeados}
+        \begin{enumerate}
+        \item Novas requisições são adicionadas ao fim da fila (uma para cada recurso), e concedidas uma vez que sejam compatíveis com as demais.
+        \item Liberações de cadeados (releases) removem a requisição da fila e as pendentes são reavaliadas.
+        \item Se um comando rollback ou abort é emitido, todos os cadeados (concedidos ou pendentes) da transação são descartados.
+        \end{enumerate}
+        \end{columns}
 \end{frame}
 
-%----------------------------------------------------------------------------------------
+%------------------------------------------------
+
+\begin{frame}
+    \frametitle{2PL: Vantagens}
+
+    A principal vantagem do 2PL (e a razão por ser a estratégia mais comum em sistemas distribuídos) é produzir um escalonamento que é garantido de ser serializável, isto é, reprodutível como se cada transação ocorresse uma após a outra.
+    \begin{block}{Exemplo 1}
+        % TODO: 2018-11-15 19:24:52
+    \end{block}
+
+    \begin{block}{Exemplo 2}
+        % TODO: 2018-11-15 19:25:08
+    \end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{2PL: Desafios}
+% TODO: acho que isso nao é verdade 2018-11-16 15:21:56
+Nem todos os cenários de conflito podem ser serializados através do 2PL. 
+
+\begin{block}{Exemplo 1}
+    % TODO: 2018-11-15 19:24:52
+\end{block}
+
+\begin{block}{Exemplo 2}
+    % TODO: 2018-11-15 19:25:08
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+    \frametitle{2PL: Desafios}
+
+    Ainda assim, 2PL oferece uma alternativa de serialização de conflitos mesmo na ausência de maiores informações. 
+
+    \begin{itemize}
+        \item Caso haja uma transação Ti que não use 2PL, é possível coordenar as transações Tj de forma que, para cada par (Ti, Tj), não haja conflitos de serialização.
+        % \item TODO: exemplo 2 2018-11-15 19:27:21
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+    \frametitle{2PL: Desafios}
+
+    2PL não necessariamente previne a existência de deadlocks. Um exemplo clássico é o lock cruzado, em que múltiplas transações necessitam do mesmo conjunto de recursos e cada uma segura o lock de um subconjunto dele, impedindo as demais de prosseguirem.
+
+    2PL prevê apenas uma forma de resolução de tais conflitos: rollback de ao menos uma das transações e descarte de suas permissões especiais.
+
+    Por conta disto, há a possibilidade de "starvation", cenário em que uma transação que necessita de acesso de escrita é repetidamente desfeita por conta da sequência de permissões de leitura concedidas sobre o mesmo recurso a outras transações.
+
+\end{frame}
 
 %------------------------------------------------
 \section{Q10: Variantes do 2PL}
 % Discuta as variantes 2PL Normal, Conservativa, Estrita e Rigorosa.
 %------------------------------------------------
 
+
 \begin{frame}
-\frametitle{Table}
-\begin{table}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
+    \frametitle{2PL: Estratégias}
+    
+    Caso ocorram deadlocks, é papel do gerenciador de concorrência garantir a integridade, a consistência e a recuperação do sistema.
+    
+    Uma das consequências a serem evitadas é o rollback em cascata. Algumas estratégias para evitá-lo são:
+    
+        \begin{block}[{Normal ou padrão}
+            Cada transação deve requerer seus cadeados quando necessitar dos recursos bloqueados e liberá-los logo em seguida. O mais simples de implementar, mas não garante um escalonamento livre de deadlocks, ou um escalonamento estrito de recuperação.
+            % TODO: imagem de fases 2018-11-16 15:25:47
+        \end{block}
+        \begin{block}{Conservadora ou estática}
+            Cada transação deve requerer os cadeados antes de executar e liberá-los logo em seguida. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento livre de deadlocks. Ainda assim, não garante que ele seja estrito de recuperação, por permitir leituras sujas (dirty reads).
+            % TODO: imagem de fases 2018-11-16 15:25:47    
+        \end{block}
+        
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
+    \begin{block}{Estrita ou restrita}
+        Cada transação deve requerer seus cadeados exclusivos antes de iniciar a execução e segurá-los até que complete com sucesso ou aborte. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento estrito de recuperação. Deadlocks ainda podem ocorrer. Apesar disso, é uma das estratégias mais comuns (não só em SGBDs), graças aos algoritmos de detecção e tratamento de deadlocks. Exemplos de SGBDs que o utilizam incluem o SQL Server (Microsoft) e o DB2 (IBM).
+        % TODO: imagem de fases 2018-11-16 15:25:47
+    \end{block}
+    \begin{block}{rigorosa}
+        Cada transação deve requerer todos os seus cadeados (exclusivos ou commpartilhados) antes de iniciar a execução e segurá-los até que complete ou aborte. As transações passam a ser serializadas pela ordem de commit. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento livre de deadlocks e estrito de recuperação. Embora seja a implementação menos prática de todas, é uma estratégia bastante empregada por SGBDs.
+        % TODO: imagem de fases 2018-11-16 15:25:47
+    \end{block}
 \end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
-
-This statement requires citation \cite{p1}.
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{The End}}
-\end{frame}
-
-%----------------------------------------------------------------------------------------
 
 %------------------------------------------------
 \section{Q11: Problemas e Prevenção}
@@ -592,85 +475,77 @@ This statement requires citation \cite{p1}.
 % ("wait-die" e "wound-wait").
 %------------------------------------------------
 
+%------------------------------------------------
+
 \begin{frame}
-\frametitle{Table}
-\begin{table}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
+    Outras estratégias de prevenção de deadlocks incluem:
+
+    \begin{itemize}
+        \item Predeclaração: cada transação deve requerer todos os cadeados necessários antes mesmo de iniciar sua execução.
+        \item Ordenação parcial: cada transação só pode enviar requisições numa ordem parcial (menos estrita que a ordenação total para evitar overhead).
+        \item Timestamps não-preemptivos (wait-die): transações antigas podem esperar recursos das posteriores, mas transações recentes são sempre desfeitas. O risco de starvation é alto porque uma transação pode tomar rollback repetidamente.
+        \item Timestamps preemptivos (wound-wait): transações forçam rollback das posteriores, mas as recentes podem esperar. O risco de starvation é significativamente menor.
+    \end{itemize}
+
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
+    \begin{itemize}
+        \item Timeout: se o lock não for concedido dentro de um certo intervalo de tempo, a transação é desfeita. Simples de implementar, porém a determinação do intervalo adequado é crucial para seu bom funcionamento.
+    \end{itemize}
+    
+    Em ambos os casos de estratégias baseadas em timestamps, a timestamp original da transação é mantida caso ela seja executada novamente, de forma a prevenir starvation.
 \end{frame}
+
 
 %------------------------------------------------
 
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
+\subsection{Detecção de deadlocks}
 \begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
-\end{frame}
+    \frametitle{Detecção de deadlocks}
+    % TODO: colocar em formato de demonstração matemática 2018-11-16 18:00:14
 
-%------------------------------------------------
+    Os algoritmos mais eficazes de detecção de deadlocks são os baseados no problema de escalonamento de tarefas (jobshop scheduling problem ou JSSP).
 
-\begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
-\end{frame}
+    O problema pode ser descrito por um conjunto de n transações fJig1$\leq$j$\leq$n que requerem um conjunto de m recursos fMrg1$\leq$r$\leq$m.
 
-%------------------------------------------------
+    Cada transação tem uma sequência própria de recursos a serem processados.
 
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
+    O processamento da transação Jj na máquina Mr é chamada de operação Ojr.
 
-This statement requires citation \cite{p1}.
+    A operação Ojr requer o uso exclusivo de Mr por uma duração ininterrupta pjr, que é seu tempo de processamento.
+
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
+    \frametitle{Detecção de deadlocks}
+
+    Um escalonamento eficaz é um conjunto de operações sequenciais fcjrg1$\leq$j$\leq$n;1$\leq$r$\leq$m que satisfazem estes critérios.
+
+    Caso haja um ciclo no escalonamento, isto é, <se existe um ciclo>, então há um estado de deadlock presente no escalonamento que precisa ser endereçado.
+
+    O algoritmo deve buscar por ciclos frequentemente, para evitar rollbacks em cascata.
+
 \end{frame}
+
 
 %------------------------------------------------
 
 \begin{frame}
-\Huge{\centerline{The End}}
-\end{frame}
 
-%----------------------------------------------------------------------------------------
+    Quando um deadlock é detectado, alguma transação deverá ser desfeita (rolled back) para quebrá-lo. A seleção da vítima deve ser feita de forma a minimizar o prejuízo de tempo.
+
+    A implementação mais simples é a do rollback total, que aborta a transação e a desfaz completamente. Porém, esta operação pode ser muito custosa.
+
+    Uma implementação mais complicada, porém mais eficiente, é o rollback parcial até que o deadlock seja desfeito.
+
+    Se a mesma transação é sempre escolhida como vítima, há o risco de starvation.
+
+\end{frame}
 
 %------------------------------------------------
 \section{Q12: Métodos de Acesso Indexado}
@@ -679,84 +554,125 @@ This statement requires citation \cite{p1}.
 % comentando o nível de granularidade do lock através do índice;
 %------------------------------------------------
 
+%------------------------------------------------
+
 \begin{frame}
-\frametitle{Table}
-\begin{table}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
+    \frametitle{Granularidade múltipla}
+    
+    Idealmente, um SGBD deve oferecer às aplicações uma interface flexível de controle de acesso concorrente aos recursos. Uma das dimensões desta flexibilidade se dá através da granularidade dos cadeados, permitindo que pequenas porções de dados sejam aninhadas em porções maiores.
+    
+    A hierarquia do acesso a estas granularidades pode ser representada graficamente como uma árvore:
+    
+    % TODO: inserir árvore de hierarquia de granularidades 2018-11-16 16:28:17
+    
+\end{frame}
+    
+%------------------------------------------------
+    
+\begin{frame}
+    
+    Quando uma transação requer um cadeado explicitamente, o gerenciador de concorrência implicitamente aplica o cadeado a todos os recursos filhos daquele nó hierárquico.
+    
+    A granularidade do bloqueio, portanto, pode ocorrer em níveis de:
+    
+    \begin{itemize}
+        \item granularidade fina: próxima às folhas da árvore, permitem maior grau de concorrência mas aumentam o custo computacional do gerenciamento (overhead).
+        \item granularidade grosseira: próxima à raiz da árvore, simplificam o gerenciamento mas reduzem a capacidade de acessos concorrentes.
+    \end{itemize}
+    
+    Os níveis da árvore de granularidade são:
+    
+    \begin{enumerate}
+        \item base de dados
+        \item setor
+        \item arquivo
+        \item registro
+    \end{enumerate}
+    
+\end{frame}
+    
+%------------------------------------------------
+    
+\begin{frame}
+    \frametitle{Tipos de intenção de cadeados}
+    
+    A partir do momento em que a granularidade múltipla passa a ser uma possibilidade oferecida pelo SGBD, os protocolos baseados em cadeados precisam passar a suportar três tipos adicionais de cadeados:
+    
+    \begin{itemize}
+        \item lock IS (intenção de compartilhamento): requer somente acessos concorrentes de leitura aos nós filhos do recurso.
+        \item lock IX (intenção de exclusividade): requer acessos de escrita e leitura aos nós filhos do recurso. A distinção será feita numa granularidade mais fina.
+        \item lock SIX (compartilhado com intenção de exclusividade): requer somente acesso de leitura aos nós filhos do recurso, mas acessos de escrita adicionais serão requeridos em granularidade mais fina.
+    \end{itemize}
+    
+    A vantagem de introduzir estes cadeados adicionais é a diminuição no tempo de resposta (overhead) do gerenciamento de concorrência, já que eliminam a necessidade de checar todos os filhos do nó requisitado.
+    
+\end{frame}
+    
+%------------------------------------------------
+    
+\begin{frame}
+    \frametitle{Matriz atualizada e compatibilidade de cadeados}
+    \begin{table}
+    \begin{tabular}{l l l l l l}
+        \toprule
+
+        \textbf{} & \textbf{IS} & \textbf{IX} & \textbf{S} & \textbf{SIX} & \textbf{X} \\
+
+        \midrule
+        IS & \checkmark & \checkmark & \checkmark & \checkmark & \times \\
+        IX & \checkmark & \checkmark & \times & \times & \times \\
+        S & \checkmark & \times & \checkmark & \times & \times \\
+        SIX & \checkmark & \times & \times & \times & \times \\
+        X & \times & \times & \times & \times & \times \\
+
+        \bottomrule
+    \end{tabular}
+    \caption{Cadeados adicionais oferecem opções intermediárias de controle de concorrência.}
+    \end{table}
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
+    \frametitle{Esquematização dos cadeados sob granularidade múltipla}
+    
+    Uma transação pode obter cadeado de qualquer nó da árvore, desde que:
+    
+    \begin{enumerate}
+        \item As regras da matriz atualizada de compatibilidade de cadeados sejam observadas.
+        \item A raiz da árvore seja a primeira a ser reservada, e possa sê-la em qualquer modo.
+        \item Um nó pode ser requisitado em nodo S ou IS somente se o nó pai dele estiver sob um cadeado IX ou IS pertencente à mesma transação.
+        \item Um nó pode ser requisitado em nodo X, SIX ou IX somente se o nó pai dele estiver sob um cadeado IX ou SIX pertencente à mesma transação.
+        \item Um nó só pode ser requisitado se a transação não houver liberado nenhum nó anterior (ou seja, se está na fase de crescimento do 2PL).
+        \item Um nó só pode ser liberado se nenhum de seus nós filhos estiver sob cadeado da mesma transação.
+    \end{enumerate}
+    
 \end{frame}
 
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
+    \frametitle{Esquematização dos cadeados sob granularidade múltipla}
+    
+    A fase de crescimento deve ocorrer sempre no sentido raiz => folhas da árvore, enquanto a fase de retração deve ocorrer sempre no sentido oposto (folhas => raiz).
+
+    Se houver cadeados demais num mesmo nível da árvore, o gerenciador de concorrência poderá elevá-los a um nó de maior hierarquia. Este procedimento é chamado de escalação da granularidade do cadeado e deverá obedecer à matriz atualizada de compatibilidade.
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
-
-This statement requires citation \cite{p1}.
-\end{frame}
-
-%------------------------------------------------
-
+\section{Referências bibliográficas}
 \begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
+    \frametitle{Referências bibliográficas}
+    \footnotesize{
+    \begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+    % \bibitem[Smith, 2012]{p1} John Smith (2012)
+    \newblock Title of the publication
+    \newblock \emph{Journal Name} 12(3), 45 -- 678.
+    \end{thebibliography}
+    }
 \end{frame}
 
 %------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{The End}}
-\end{frame}
-
-%----------------------------------------------------------------------------------------
 
 \end{document} 
