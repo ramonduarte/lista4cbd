@@ -1,18 +1,15 @@
-\begin{example}[Operação de escrita do recurso R]
+\frametitle{Aquisição automática de cadeados}
+
+    \begin{example}[Operação de escrita do recurso R]
     \begin{verbatim}
         resource R;
         if (this->getXLock(R)) {
-            this->write(R);
-        } else {
+            this->write(R); } else {
             if !(xLocked(R)) {
                 if (this->hasSLock(R)) {
                     this->upgradeToXLock(R);
-                } else {
-                    this->getXLock(R);
-                }
-                this->read(R);
-            }
-        }
+                } else { this->getXLock(R); }
+                this->read(R); } }
         this->commit();
         this->release(R);
 
