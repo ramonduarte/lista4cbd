@@ -3,6 +3,7 @@
     \begin{example}[Operação de escrita do recurso R]
     \begin{verbatim}
         resource R;
+        while (isLocked(R)) { sleep(); }
         if (this->getXLock(R)) {
             this->write(R); } else {
             if !(xLocked(R)) {
@@ -12,6 +13,5 @@
                 this->read(R); } }
         this->commit();
         this->release(R);
-
     \end{verbatim}
     \end{example}

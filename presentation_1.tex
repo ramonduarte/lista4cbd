@@ -79,9 +79,13 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage[brazil]{babel}
+\selectlanguage{brazil}
+\languagepath{brazil}
+\deftranslation[to=brazil]{Example}{Exemplo}
+\deftranslation[to=brazil]{Theorem}{Teorema}
 \usepackage[utf8]{inputenc}
 \usepackage{amssymb}
-
+\usepackage{mathtools}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -100,11 +104,11 @@
 
 \begin{document}
 
-\begin{frame}
+\begin{frame} % SLIDE 1
     \titlepage % Print the title page as the first slide
 \end{frame}
 
-\begin{frame}
+\begin{frame} % SLIDE 2
     \frametitle{Sumário} % Table of contents slide, comment this block out to remove it
     \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 \end{frame}
@@ -119,7 +123,7 @@
 
 \subsection{Definições} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
 
-\begin{frame}
+\begin{frame} % SLIDE 3
     \frametitle{Glossário}
     
     \begin{block}{Recurso}
@@ -132,7 +136,7 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 4
     \frametitle{Glossário}
 
     \begin{block}{Requisição de cadeado}
@@ -141,6 +145,12 @@
     \begin{block}{Cadeado binário}
         Estrutura de dados usada para impedir que qualquer outra aplicação tenha acesso concorrente ao recurso. Não são efetivamente utilizados em sistemas onde múltiplas aplicações executem simultaneamente.
     \end{block}
+\end{frame}
+
+
+\begin{frame} % SLIDE 5
+    \frametitle{Glossário}
+
     \begin{block}{Cadeado exclusivo (\emph{lock X})}
         Similar ao cadeado binário, permite a livre leitura e/ou escrita aplicando exclusão mútua nos sistemas onde acesso compartilhado está disponível.
     \end{block}
@@ -151,7 +161,7 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 6
     \frametitle{Glossário}
 
     \begin{block}{\emph{Deadlock}}
@@ -162,7 +172,7 @@
     \end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame} % SLIDE 7
     \frametitle{Glossário}
 
     \begin{block}{Serialização}
@@ -188,7 +198,7 @@
 % e como evita os problemas da concorrência.
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 8
     \frametitle{Protocolos baseados em cadeados}
 
     Para esta apresentação, consideraremos somente o conjunto de controles de concorrência baseados em cadeados (\emph{lock-based}).
@@ -201,7 +211,7 @@
 
 %------------------------------------------------
 
-\begin{frame}        
+\begin{frame} % SLIDE 9
     \frametitle{Protocolos baseados em cadeados}
 
     Nestes protocolos, uma aplicação que deseja executar uma transação requisita uma permissão de leitura (\emph{lock S}) ou leitura e escrita (\emph{lock X}) ao gerenciador de concorrência e aguarda numa fila.
@@ -219,7 +229,7 @@
 
 \subsection{Locks exclusivos e compartilhados}
 
-\begin{frame}
+\begin{frame} % SLIDE 10
     \frametitle{Matriz de compatibilidade de cadeados}
     
     \begin{table}
@@ -243,7 +253,7 @@
 
 \subsection{Conversões de cadeados} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
 
-\begin{frame}
+\begin{frame} % SLIDE 11
     \frametitle{\emph{Upgrades} e \emph{downgrades}}
 
     \begin{block}{\textbf{\emph{Upgrade}}: \emph{lock S} para \emph{lock X}}
@@ -259,10 +269,12 @@
 
 %------------------------------------------------
 
-\begin{frame}[fragile]
+\begin{frame}[fragile] % SLIDE 12
     \frametitle{Protocolos baseados em cadeados}
 
-    O uso de cadeados por si só não é suficiente para garantir serialização. No exemplo abaixo, se $Q$ ou $R$ forem atualizados na transição entre a obtenção dos cadeados, o resultado será distinto do esperado pelo desenvolvedor.
+    O uso de cadeados por si só não é suficiente para garantir serialização. No exemplo abaixo, se $Q$ ou $R$ forem atualizados na transição entre a obtenção dos cadeados, o resultado será distinto do esperado.
+
+    \medskip
 
     \begin{example}[Operação de leitura simples]
         \begin{verbatim}
@@ -283,7 +295,8 @@
 %------------------------------------------------
 
 \subsection{2PL: \emph{Two-Phase Locking}}
-\begin{frame}
+
+\begin{frame} % SLIDE 13
     \frametitle{2PL: \emph{Two-Phase Locking}}
 
     Este protocolo garante a produção de escalonamentos serializáveis (baseados na ordem dos \emph{lock points}), que são as aquisições do último cadeado) e é composto de duas fases sequenciais:
@@ -294,7 +307,8 @@
     \end{block}
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 14
     \frametitle{2PL: \emph{Two-Phase Locking}}
     
     \begin{block}{Fase de Retração}
@@ -307,11 +321,12 @@
 
 %------------------------------------------------
 
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\begin{frame}[fragile] % SLIDE 15
     \frametitle{Aquisição automática de cadeados}
     \begin{example}[Operação de leitura do recurso R]
     \begin{verbatim}
         resource R;
+        while (isLocked(R)) { sleep(); }
         if (this->getLock(R)) {
             this->read(R);
         } else {
@@ -322,19 +337,19 @@
         }
         this->commit();
         this->release(R);
-    
     \end{verbatim}
     \end{example}
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\begin{frame}[fragile] % SLIDE 16
     \frametitle{Aquisição automática de cadeados}
 
     \begin{example}[Operação de escrita do recurso R]
     \begin{verbatim}
         resource R;
+        while (isLocked(R)) { sleep(); }
         if (this->getXLock(R)) {
             this->write(R); } else {
             if !(xLocked(R)) {
@@ -344,14 +359,13 @@
                 this->read(R); } }
         this->commit();
         this->release(R);
-    
     \end{verbatim}
     \end{example}
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 17
     \frametitle{Implementação}
 
     O cérebro do 2PL é um processo chamado "gerenciador de concorrência" ("\emph{lock manager}"), para o qual as aplicações requerem cadeados e enviam \emph{releases}) antes e depois de executarem transações.
@@ -367,7 +381,7 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 18
     \frametitle{Tabela de cadeados}
     Para tanto, o gerenciador mantém uma tabela de cadeados (\emph{lock table}), uma estrutura de dados especial que registra cadeados garantidos, negados e pendentes.
 
@@ -375,7 +389,8 @@
     A tabela é mantida em memória física (RAM) como uma tabela \emph{hash} indexada pelo nome do recurso cujo acesso foi requisitado. Nela, são gravados também o identificador da transação, o tipo de cadeado requisitado e um ponteiro para a próxima requisição da fila.
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 19
     \frametitle{Tabela de cadeados}
 
     \begin{table}
@@ -403,13 +418,13 @@
 %------------------------------------------------
     
     
-\begin{frame}
+\begin{frame} % SLIDE 20
     \frametitle{Tabela de cadeados (\emph{lock table})}
     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
     
     \column{.45\textwidth} % Left column and width
         \begin{figure}
-            \includegraphics[width=0.8\linewidth]{locktable.jpg}
+            \includegraphics[width=0.8\linewidth]{locktable.png}
         \end{figure}
     
     \column{.5\textwidth} % Right column and width
@@ -420,63 +435,69 @@
             \item Liberações (\emph{releases}) de cadeados removem a requisição da fila e as requisições pendentes são reavaliadas.
             \item Se um \emph{rollback} ou \emph{abort} é emitido, todo cadeado concedido e/ou pendente da transação é descartado.
         \end{enumerate}
-        \end{columns}
+    \end{columns}
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 21
     \frametitle{2PL: Vantagens}
 
-    A principal vantagem do 2PL (e a razão por ser a estratégia mais comum em sistemas distribuídos) é produzir um escalonamento que é garantido de ser serializável, isto é, reprodutível como se cada transação ocorresse uma após a outra.
+    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
     
-    \medskip
-    \begin{example}{Exemplo 1}
-        % TODO: 2018-11-15 19:24:52
-    \end{example}
+        \column{.45\textwidth} % Left column and width
+            \begin{figure}
+                \includegraphics[width=0.8\linewidth]{example6.png}
+            \end{figure}
+        
+        \column{.5\textwidth} % Right column and width
+        
+        A principal vantagem do 2PL (e a razão por ser a estratégia mais comum em sistemas distribuídos) é produzir um escalonamento que é garantido de ser serializável, isto é, reprodutível como se cada transação ocorresse uma após a outra.
+    \end{columns}
+    
 \end{frame}
 
 
-\begin{frame}
+\begin{frame} % SLIDE 22
     \frametitle{2PL: Vantagens}
 
-    \begin{example}{Exemplo 2}
-        % TODO: 2018-11-15 19:25:08
-    \end{example}
+    \begin{figure}
+        \includegraphics[width=0.6\linewidth]{example2.png}
+    \end{figure}
 
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
-\frametitle{2PL: Desafios}
-    % TODO: acho que isso nao é verdade 2018-11-16 15:21:56
-    Nem todos os cenários de conflito podem ser serializados através do 2PL. 
+% \begin{frame} % SLIDE 23
+% \frametitle{2PL: Desafios}
+%     % TODO: acho que isso nao é verdade 2018-11-16 15:21:56
+%     Nem todos os cenários de conflito podem ser serializados através do 2PL. 
 
-    \begin{example}{Exemplo 3}
-        % TODO: 2018-11-15 19:24:52
-    \end{example}
+%     \begin{example}{Exemplo 3}
+%         % TODO: 2018-11-15 19:24:52
+%     \end{example}
 
-    \medskip
-    \begin{example}{Exemplo 4}
-        % TODO: 2018-11-15 19:25:08
-        % TODO: opcional 2018-11-17 14:27:08
-    \end{example}
+%     \medskip
+%     \begin{example}{Exemplo 4}
+%         % TODO: 2018-11-15 19:25:08
+%         % TODO: opcional 2018-11-17 14:27:08
+%     \end{example}
 
-\end{frame}
+% \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 24
     \frametitle{2PL: Desafios}
 
     Ainda assim, 2PL oferece uma alternativa de serialização de conflitos mesmo na ausência de maiores informações. 
 
     \medskip
-    \begin{itemize}
-        \item Caso haja uma transação $Ti$ que não use 2PL, é possível coordenar as transações $Tj$ de forma que, para cada par $(Ti, Tj)$, não haja conflitos de serialização.
+    \begin{theorem}[Serialização do 2PL]
+        Caso haja uma transação $Ti$ que não use 2PL, é possível coordenar as transações $Tj$ de forma que, para cada par $(Ti, Tj)$, não haja conflitos de serialização.
         % \item TODO: exemplo 5 2018-11-15 19:27:21
-    \end{itemize}
+    \end{theorem}
 
     \medskip
     % TODO: inserir observação de que isso só ocorre quando o 2PL não é implementado por completo.
@@ -484,37 +505,46 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 25
     \frametitle{2PL: Desafios}
 
-    2PL não necessariamente previne a existência de \emph{deadlocks}. Um exemplo clássico é o \emph{lock} cruzado, em que múltiplas transações necessitam do mesmo conjunto de recursos e cada uma segura o cadeado de um subconjunto dele, impedindo as demais de prosseguirem.
-
-    \medskip
-    \begin{example}{Exemplo 6}
-        % TODO: 2018-11-15 19:25:08
-    \end{example}
+    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+    
+        \column{.45\textwidth} % Left column and width
+            \begin{figure}
+                \includegraphics[width=0.8\linewidth]{example6.png}
+            \end{figure}
+        
+        \column{.5\textwidth} % Right column and width
+        
+        2PL não necessariamente previne a existência de \emph{deadlocks}. Um exemplo clássico é o \emph{lock} cruzado, em que múltiplas transações necessitam do mesmo conjunto de recursos e cada uma segura o cadeado de um subconjunto dele, impedindo as demais de prosseguirem.
+    \end{columns}
+    
 \end{frame}
 
 
-\begin{frame}
+\begin{frame} % SLIDE 26
     \frametitle{2PL: Desafios}
+
+    \medskip
     2PL prevê apenas uma forma de resolução de tais conflitos: \emph{rollback} de ao menos uma das transações e descarte de suas permissões especiais.
 
     \medskip
-    \begin{example}{Exemplo 7}
-        % TODO: 2018-11-15 19:25:08
-    \end{example}
+    \medskip
+    \begin{figure}
+        \includegraphics[width=0.4\linewidth]{example7.jpg}
+    \end{figure}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame} % SLIDE 27
     \frametitle{2PL: Desafios}
     Por conta disto, há a possibilidade de "\emph{starvation}", cenário em que uma transação que necessita de acesso de escrita é repetidamente desfeita por conta da sequência de permissões de leitura concedidas sobre o mesmo recurso a outras transações.
 
     \medskip
-    \begin{example}{Exemplo 8}
-        % TODO: 2018-11-15 19:25:08
-    \end{example}
+    \begin{figure}
+        \includegraphics[width=0.8\linewidth]{starvation.jpg}
+    \end{figure}
 \end{frame}
 
 %------------------------------------------------
@@ -523,26 +553,37 @@
 %------------------------------------------------
 
 
-\begin{frame}
+\begin{frame} % SLIDE 28
     \frametitle{2PL: Estratégias}
     
     Caso ocorram \emph{deadlocks}, é papel do gerenciador de concorrência garantir a integridade, a consistência e a recuperação do sistema.
     
     \medskip
-    Uma das consequências a serem evitadas é o \emph{rollback} em cascata. Algumas estratégias para evitá-lo são:
+    Uma das consequências a serem evitadas é o \emph{rollback} em cascata, que é o cenário em que um \emph{deadlock} força várias transações interdependentes entre si a desfazerem suas operações. Existem algumas estratégias dentro do próprio 2PL para evitá-lo.
+\end{frame}
+
+
+\begin{frame} % SLIDE 29
+    \frametitle{2PL: Estratégias}
+
+    \begin{figure}
+        \includegraphics[width=0.8\linewidth]{example9.png}
+    \end{figure}
+\end{frame}
     
-    \medskip
+
+\begin{frame} % SLIDE 30
+    \frametitle{2PL: Estratégias}
     \begin{block}{\textbf{Normal ou padrão}}
         Cada transação deve requerer seus cadeados quando necessitar dos recursos bloqueados e liberá-los logo em seguida. O mais simples de implementar, mas não garante um escalonamento livre de \emph{deadlocks}, ou um escalonamento estrito de recuperação.
 
-        \medskip
         \begin{figure}
-            \includegraphics[width=0.8\linewidth]{basic2pl.png}
+            \includegraphics[width=0.4\linewidth]{basic2pl.png}
         \end{figure}
     \end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame} % SLIDE 31
     \frametitle{2PL: Estratégias}
     
     \begin{block}{\textbf{Conservadora ou estática}}
@@ -550,33 +591,34 @@
 
         \medskip
         \begin{figure}
-            \includegraphics[width=0.8\linewidth]{conservative2pl.png}
+            \includegraphics[width=0.55\linewidth]{conservative2pl.png}
         \end{figure}
     \end{block}
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 32
     \frametitle{2PL: Estratégias}
     \begin{block}{\textbf{Estrita ou restrita}}
         Cada transação deve requerer seus cadeados exclusivos antes de iniciar a execução e segurá-los até que complete com sucesso ou aborte. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento estrito de recuperação. \emph{Deadlocks} ainda podem ocorrer. Apesar disso, é uma das estratégias mais comuns (não só em SGBDs), graças aos algoritmos de detecção e tratamento de \emph{deadlocks}. Exemplos de SGBDs que o utilizam incluem o \emph{SQL Server} (Microsoft) e o \emph{DB2} (IBM).
 
         \medskip
         \begin{figure}
-            \includegraphics[width=0.8\linewidth]{strict2pl.png}
+            \includegraphics[width=0.6\linewidth]{strict2pl.png}
         \end{figure}
     \end{block}
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 33
     \frametitle{2PL: Estratégias}
     \begin{block}{\textbf{Rigorosa}}
         Cada transação deve requerer todos os seus cadeados (exclusivos ou commpartilhados) antes de iniciar a execução e segurá-los até que complete ou aborte. As transações passam a ser serializadas pela ordem de \emph{commit}. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento livre de \emph{deadlocks} e estrito de recuperação. Embora seja a implementação menos prática de todas, é uma estratégia bastante empregada por SGBDs.
 
         \medskip
         \begin{figure}
-            \includegraphics[width=0.8\linewidth]{rigorous2pl.png}
+            \includegraphics[width=0.65\linewidth]{rigorous2pl.png}
         \end{figure}
     \end{block}
 \end{frame}
@@ -591,7 +633,7 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 34
     \frametitle{Demais estratégias de prevenção de \emph{deadlocks}}
     Outras estratégias de prevenção de \emph{deadlocks} incluem:
 
@@ -606,15 +648,16 @@
     \end{block}
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 35
     \frametitle{Demais estratégias de prevenção de \emph{deadlocks}}
     
-    \begin{block}{\textbf{Timestamps não-preemptivos (\emph{wait-die))}}}
+    \begin{block}{\textbf{Timestamps não-preemptivos (\emph{wait-die})}}
         Transações antigas podem esperar recursos das posteriores, mas transações recentes são sempre desfeitas. O risco de \emph{starvation} é alto porque uma transação pode tomar \emph{rollback} repetidamente.
     \end{block}
 
     \medskip
-    \begin{block}{T\textbf{imestamps preemptivos (\emph{wound-wait))}}}
+    \begin{block}{\textbf{Timestamps preemptivos (\emph{wound-wait})}}
         Transações forçam \emph{rollback} das posteriores, mas as recentes podem esperar. O risco de \emph{starvation} é significativamente menor.
     \end{block}
 
@@ -622,10 +665,12 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 36
     \frametitle{Demais estratégias de prevenção de \emph{deadlocks}}
 
-    Em ambos os casos de estratégias baseadas em \emph{timestamps}, a \emph{timestamp} original da transação é mantida caso ela seja executada novamente, de forma a prevenir \emph{starvation}.
+    \begin{itemize}
+        \item Em ambos os casos de estratégias baseadas em \emph{timestamps}, a \emph{timestamp} original da transação é mantida caso ela seja executada novamente, de forma a prevenir \emph{starvation}.
+    \end{itemize}
 
     \medskip
     \begin{block}{\textbf{\emph{Timeout}}}
@@ -638,58 +683,62 @@
 %------------------------------------------------
 
 \subsection{Detecção de \emph{deadlocks}}
-\begin{frame}
+
+\begin{frame} % SLIDE 37
     \frametitle{Detecção de \emph{deadlocks}}
 
-    Os algoritmos mais eficazes de detecção de \emph{deadlocks} são os baseados no problema de escalonamento de tarefas (\emph{jobshop scheduling problem} ou \emph{JSSP}).
+    Os algoritmos mais eficazes de detecção de \emph{deadlocks} são os baseados no escalonamento de tarefas (\emph{jobshop scheduling problem} ou \emph{JSSP}).
 
     \medskip
     \begin{figure}
-        \includegraphics[width=0.8\linewidth]{deadlockdetection1.jpg}
+        \includegraphics[width=0.75\linewidth]{deadlockdetection1.jpg}
     \end{figure}
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 38
     \frametitle{Detecção de \emph{deadlocks}}
     % TODO: colocar em formato de demonstração matemática 2018-11-16 18:00:14
 
-    O problema pode ser descrito por um conjunto de n transações fJig1$\leq$j$\leq$n que requerem um conjunto de m recursos fMrg1$\leq$r$\leq$m.
+    \begin{theorem}
+        O problema pode ser descrito por um conjunto de \(n\) transações \(\{\, J_{j} \, | \, 1 \, \leq \, j \, \leq \, n\, \}\) que requerem um conjunto de \(m\) recursos \(\{\, M_{r} \, | \, 1 \, \leq \, r \, \leq \, m\, \}\).
 
-    \medskip
-    Cada transação tem uma sequência própria de recursos a serem processados.
+        \medskip
+        Cada transação tem uma sequência própria de recursos a serem processados.
 
-    \medskip
-    O processamento da transação Jj na máquina Mr é chamada de operação Ojr.
+        \medskip
+        O processamento da transação \(J_j\) na máquina \(M_r\) é chamada de operação \(O_{j_{r}}\).
 
-    \medskip
-    A operação Ojr requer o uso exclusivo de Mr por uma duração ininterrupta pjr, que é seu tempo de processamento.
+        \medskip
+        A operação \(O_{j_{r}}\) requer o uso exclusivo de Mr por uma duração ininterrupta \(p_{j_{r}}\), que é seu tempo de processamento.
+        
+    \end{theorem}
 
 \end{frame}
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 39
     \frametitle{Detecção de \emph{deadlocks}}
     % TODO: colocar em formato de demonstração matemática 2018-11-16 18:00:14
+    \begin{theorem}
 
-    Um escalonamento eficaz é um conjunto de operações sequenciais fcjrg1$\leq$j$\leq$n;1$\leq$r$\leq$m que satisfazem estes critérios.
+        Um escalonamento eficaz é um conjunto de operações sequenciais \(\{\, c_{j_{r}} \, | \, 1 \, \leq \, j \, \leq \, n, \, 1 \, \leq \, r \, \leq \, m\, \}\) que satisfazem estes critérios.
 
-    \medskip
-    Caso haja um ciclo no escalonamento, isto é, <se existe um ciclo>, então há um estado de \emph{deadlock} presente no escalonamento que precisa ser endereçado.
+        \medskip
+        Caso haja um ciclo no escalonamento, então há um estado de \emph{deadlock} presente no escalonamento que precisa ser endereçado. O algoritmo deve buscar por ciclos frequentemente, para evitar \emph{rollbacks} em cascata.
 
-    \medskip
-    O algoritmo deve buscar por ciclos frequentemente, para evitar \emph{rollbacks} em cascata.
+    \end{theorem}
 
-    \medskip
     \begin{figure}
-        \includegraphics[width=0.8\linewidth]{deadlockdetection1.jpg}
+        \includegraphics[width=0.5\linewidth]{deadlockdetection1.jpg}
     \end{figure}
 \end{frame}
 
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 40
     \frametitle{Recuperação de \emph{deadlocks}}
     % TODO: dá para dividir este slide em 2 2018-11-17 14:40:46
 
@@ -697,14 +746,25 @@
 
     \medskip
     A implementação mais simples é a do \emph{rollback} total, que aborta a transação e a desfaz completamente. Porém, esta operação pode ser muito custosa.
+
+    \begin{figure}
+        \includegraphics[width=0.5\linewidth]{completerollback.png}
+    \end{figure}
+
 \end{frame}
 
 
-\begin{frame}
+\begin{frame} % SLIDE 41
+    \frametitle{Recuperação de \emph{deadlocks}}
     Uma implementação mais complicada, porém mais eficiente, é o \emph{rollback} parcial até que o \emph{deadlock} seja desfeito.
 
     \medskip
     Se a mesma transação é sempre escolhida como vítima, há o risco de \emph{starvation}.
+
+    \medskip
+    \begin{figure}
+        \includegraphics[width=0.8\linewidth]{partialrollback.png}
+    \end{figure}
 
 \end{frame}
 
@@ -718,7 +778,7 @@
 %------------------------------------------------
 \subsection{Granularidade múltipla}
 
-\begin{frame}
+\begin{frame} % SLIDE 42
     \frametitle{Granularidade múltipla}
     
     Idealmente, um SGBD deve oferecer às aplicações métodos de acesso indexado através de uma interface flexível de controle de acesso concorrente aos recursos.
@@ -728,18 +788,20 @@
 \end{frame}
 
 
-\begin{frame}
+\begin{frame} % SLIDE 43
     \frametitle{Acesso indexado}    
     A hierarquia de indexação do acesso a estas granularidades pode ser representada graficamente como uma árvore:
     
     \medskip
-    % TODO: inserir árvore de hierarquia de granularidades 2018-11-16 16:28:17
+    \begin{figure}
+        \includegraphics[width=0.8\linewidth]{granularitytree.png}
+    \end{figure}
     
 \end{frame}
-    
+
 %------------------------------------------------
     
-\begin{frame}
+\begin{frame} % SLIDE 44
     \frametitle{Acesso indexado}
     
     Quando uma transação requisita um cadeado explicitamente, o gerenciador de concorrência implicitamente aplica o cadeado a todos os recursos filhos daquele índice hierárquico.
@@ -758,7 +820,8 @@
     \end{block}
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 44
     \frametitle{Acesso indexado}
 
     Os índices da árvore de granularidade são:
@@ -779,7 +842,7 @@
     
 %------------------------------------------------
     
-\begin{frame}
+\begin{frame} % SLIDE 45
     \frametitle{Tipos de intenção de cadeados}
     
     A partir do momento em que a granularidade múltipla passa a ser uma possibilidade oferecida pelo SGBD, os protocolos baseados em cadeados precisam passar a suportar três tipos adicionais de cadeados:
@@ -796,7 +859,8 @@
 
 \end{frame}
 
-\begin{frame}
+
+\begin{frame} % SLIDE 46
     \frametitle{Tipos de intenção de cadeados}
 
     \begin{block}{\textbf{\emph{lock SIX} (compartilhado com intenção de exclusividade)}}
@@ -804,17 +868,18 @@
     \end{block}
     
     \medskip
+    \medskip
     A vantagem de introduzir estes cadeados adicionais é a diminuição no tempo de resposta (\emph{overhead}) do gerenciamento de concorrência, já que eliminam a necessidade de checar todos os filhos do índice requisitado.
     
 \end{frame}
     
 %------------------------------------------------
     
-\begin{frame}
+\begin{frame} % SLIDE 47
     \frametitle{Matriz atualizada e compatibilidade de cadeados}
 
     \begin{table}
-    \begin{tabular}{l l l l l l}
+    \begin{tabular}{l l l l l l l l l l l l}
         \toprule
 
         \textbf{} && \textbf{IS} && \textbf{IX} && \textbf{S} && \textbf{SIX} && \textbf{X} \\
@@ -836,7 +901,7 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 48
     \frametitle{Esquematização dos cadeados sob granularidade múltipla}
     
     Uma transação pode obter cadeado de qualquer nó da árvore, desde que:
@@ -848,8 +913,9 @@
         \item Um nó pode ser requisitado em nodo S ou IS somente se o nó pai dele estiver sob um cadeado IX ou IS pertencente à mesma transação.
     \end{enumerate}
 \end{frame}
-        
-\begin{frame}
+
+
+\begin{frame} % SLIDE 49
     \frametitle{Esquematização dos cadeados sob granularidade múltipla}
 
     \begin{enumerate}
@@ -863,25 +929,103 @@
 
 %------------------------------------------------
 
-\begin{frame}
+\begin{frame} % SLIDE 50
     \frametitle{Esquematização dos cadeados sob granularidade múltipla}
     
-    A fase de crescimento deve ocorrer sempre no sentido raiz \Rightarrow folhas da árvore, enquanto a fase de retração deve ocorrer sempre no sentido oposto (folhas $\Rightarrow$ raiz).
+    A fase de crescimento deve ocorrer sempre no sentido raiz $\Rightarrow$ folhas da árvore, enquanto a fase de retração deve ocorrer sempre no sentido oposto (folhas $\Rightarrow$ raiz).
 
     \medskip
     Se houver cadeados demais num mesmo nível da árvore, o gerenciador de concorrência poderá elevá-los a um nó de maior hierarquia. Este procedimento é chamado de escalação da granularidade do cadeado e deverá obedecer à matriz atualizada de compatibilidade.
 \end{frame}
 
+
+%------------------------------------------------
+
+\section{Conclusão}
+
+\begin{frame} % SLIDE 52
+    \frametitle{Revisão}
+    Em resumo, vimos nesta apresentação:
+    
+    \begin{enumerate}
+        \item O que são cadeados e seus tipos
+        \item Protocolos baseados em cadeados
+        \item \emph{2PL} como ferramenta de serialização
+        \begin{enumerate}
+            \item Fase de crescimento e de retração
+            \item Gerenciador de concorrência (\emph{lock manager})
+            \item Tabela de cadeados (\emph{lock table})
+        \end{enumerate}
+        \item Variantes do \emph{2PL}
+        \begin{enumerate}
+            \item Normal (ou padrão)
+            \item Conservadora (ou estática)
+            \item Estrita (ou restrita)
+            \item Rigorosa
+        \end{enumerate}
+        \item Prevenção de \emph{deadlocks}
+        \item Detecção de \emph{deadlocks}
+        \item Recuperação de \emph{deadlocks}
+        \item Granularidade múltipla
+        \item Métodos de acesso indexado
+    \end{enumerate}
+
+\end{frame}
+
+\begin{frame} % SLIDE 52
+    \frametitle{Conclusão}
+    \begin{itemize}
+        \item \emph{2PL} é um protocolo simples que promove serialização, mas é suscetível a \emph{deadlocks}.
+        \item Variantes oferecem melhores escalonamentos a um custo maior de complexidade.
+        \item Estratégias de prevenção, detecção e recuperação de \emph{deadlocks} ainda são necessárias.
+        \item Uso da árvore de granularidade favorece o uso de métodos de acesso indexado com o \emph{2PL}.
+    \end{itemize}
+
+    % \medskip
+    \begin{figure}
+        \includegraphics[width=0.53\linewidth]{conclusion.png}
+    \end{figure}
+\end{frame}
+
 %------------------------------------------------
 
 \section{Referências bibliográficas}
-\begin{frame}
+
+\begin{frame} % SLIDE 53
     \frametitle{Referências bibliográficas}
     \footnotesize{
     \begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
     % \bibitem[Smith, 2012]{p1} John Smith (2012)
-    \newblock Title of the publication
-    \newblock \emph{Journal Name} 12(3), 45 -- 678.
+        \bibitem[Silberschatz, 2010]{p1}
+        Silberschatz, A., Korth, H. F., \& Sudarshan, S. (2010). Database system concepts (Vol. 4). New York: McGraw-Hill.
+
+        \bibitem[Rawat, 2017]{p2}
+        Rawat, U. (2017). Implementation of Locking in DBMS. Acessado a \date{25/11/2018} em https://www.geeksforgeeks.org/implementation-of-locking-in-dbms/.
+
+        \bibitem[Porfirio, 2013]{p3}
+        Porfirio, Alice \& Pellegrini, Alessandro \& Di Sanzo, Pierangelo \& Quaglia, Francesco. (2013). Transparent Support for Partial Rollback in Software Transactional Memories. 8097. 583-594. 10.1007/978-3-642-40047-6\_59. 
+
+        \bibitem[Poddar, 2013]{p4}
+        Poddar, Saumendra. (2003). SQL Server Transactions and Error Handling. Acessado a \date{25/11/2018} em https://www.codeproject.com/Articles/4451/SQL-Server-Transactions-and-Error-Handling.
+    \end{thebibliography}
+    }
+\end{frame}
+
+
+\begin{frame} % SLIDE 53
+    \frametitle{Referências bibliográficas}
+    \footnotesize{
+    \begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+
+    \bibitem[Singhal, 2018]{p5}
+        Singhal, Akshay. (2018). Cascading Schedule | Cascading Rollback | Cascadeless Schedule. Acessado a \date{25/11/2018} em https://www.gatevidyalay.com/cascading-schedule-cascading-rollback-cascadeless-schedule/.
+
+        \bibitem[Pandey, 2018]{p6}
+        Pandey, Anand. (2018). Transactions and Concurrency Control. Acessado a \date{25/11/2018} em https://gradeup.co/transactions-and-concurrency-control-i-4c5d9b27-c5a7-11e5-bcc4-bc86a005f7ba.
+
+	    \bibitem[Difference between, 2018]{p7}
+        Difference between. (2018). Difference between Deadlock and Starvation. Acessado a \date{25/11/2018} em http://www.differencebetween.info/difference-between-deadlock-and-starvation.
+
     \end{thebibliography}
     }
 \end{frame}
