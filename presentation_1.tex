@@ -397,14 +397,14 @@
     \begin{tabular}{l l l l}
         \toprule
 
-        \textbf{ID transação} & \textbf{ID recurso} & \textbf{tipo de \emph{lock}} & \textbf{ponteiro próx.}\\
+        \textbf{ID recurso} & \textbf{ID transação} & \textbf{tipo de \emph{lock}} & \textbf{ponteiro próx.}\\
 
         \midrule
 
-        T1 & R122 & S & 0x009F03BC \\
-        T2 & T12 & S & 0x00AF13CD \\
-        T1 & C2349 & S & 0x00795CF1 \\
-        T3 & R122 & X & 0x00A01403 \\
+        R122 & T1 & S & 0x009F03BC \\
+        T12 & T2 & S & 0x00AF13CD \\
+        C2349 & T1 & S & 0x00795CF1 \\
+        R122 & T3 & X & 0x00A01403 \\
 
         \bottomrule
     \end{tabular}
@@ -614,7 +614,7 @@
 \begin{frame} % SLIDE 33
     \frametitle{2PL: Estratégias}
     \begin{block}{\textbf{Rigorosa}}
-        Cada transação deve requerer todos os seus cadeados (exclusivos ou commpartilhados) antes de iniciar a execução e segurá-los até que complete ou aborte. As transações passam a ser serializadas pela ordem de \emph{commit}. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento livre de \emph{deadlocks} e estrito de recuperação. Embora seja a implementação menos prática de todas, é uma estratégia bastante empregada por SGBDs.
+        Cada transação deve requerer todos os seus cadeados (exclusivos ou compartilhados) antes de iniciar a execução e segurá-los até que complete ou aborte. As transações passam a ser serializadas pela ordem de \emph{commit}. A implementação exige conhecimento prévio do plano de execução, mas garante um escalonamento livre de \emph{deadlocks} e estrito de recuperação. Embora seja a implementação menos prática de todas, é uma estratégia bastante empregada por SGBDs.
 
         \medskip
         \begin{figure}
