@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  28 NOV 2018 16:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.16)  3 DEC 2018 15:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1239,19 +1239,21 @@ Dictionary: translator-theorem-dictionary, Language: English
 
 ] [9
 
+] [10
+
 ]
-LaTeX Font Info:    Try loading font information for U+msa on input line 250.
+LaTeX Font Info:    Try loading font information for U+msa on input line 256.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 250.
+LaTeX Font Info:    Try loading font information for U+msb on input line 256.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Try loading font information for OT1+mathkerncmss on input 
-line 250.
+line 256.
 
 (/usr/share/texlive/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2013/03/27 Fontinst v1.933 font definitions for OT1/ma
@@ -1259,192 +1261,185 @@ thkerncmss.
 )
 
 LaTeX Font Warning: Font shape `OT1/cmss/bx/it' undefined
-(Font)              using `OT1/cmss/bx/n' instead on input line 250.
+(Font)              using `OT1/cmss/bx/n' instead on input line 256.
 
-[10
+[11
 
-] [11
+] [12
 
 ]
 \openout4 = `presentation_1.vrb'.
 
- (./presentation_1.vrb) [12
-
-] [13
+ (./presentation_1.vrb) [13
 
 ] [14
 
-]
-\openout4 = `presentation_1.vrb'.
-
- (./presentation_1.vrb) [15
+] [15
 
 ]
 \openout4 = `presentation_1.vrb'.
 
+ (./presentation_1.vrb) [16
 
-(./presentation_1.vrb) [16
+]
+\openout4 = `presentation_1.vrb'.
 
-] [17
+
+(./presentation_1.vrb) [17
 
 ] [18
 
 ] [19
 
+] [20
+
 ]
-<locktable.png, id=616, 508.90125pt x 699.61375pt>
+<locktable.png, id=660, 508.90125pt x 699.61375pt>
 File: locktable.png Graphic file (type png)
 <use locktable.png>
-Package pdftex.def Info: locktable.png  used on input line 439.
+Package pdftex.def Info: locktable.png  used on input line 440.
 (pdftex.def)             Requested size: 123.22592pt x 169.40526pt.
- [20
-
- <./locktable.png>]
-<example6.png, id=645, 282.05376pt x 280.04625pt>
-File: example6.png Graphic file (type png)
-<use example6.png>
-Package pdftex.def Info: example6.png  used on input line 458.
-(pdftex.def)             Requested size: 123.22592pt x 122.349pt.
  [21
 
- <./example6.png>]
-<example2.png, id=673, 407.5225pt x 383.4325pt>
-File: example2.png Graphic file (type png)
-<use example2.png>
-Package pdftex.def Info: example2.png  used on input line 468.
-(pdftex.def)             Requested size: 205.37926pt x 193.23695pt.
+ <./locktable.png>]
+<example6.png, id=688, 282.05376pt x 280.04625pt>
+File: example6.png Graphic file (type png)
+<use example6.png>
+Package pdftex.def Info: example6.png  used on input line 461.
+(pdftex.def)             Requested size: 123.22592pt x 122.349pt.
  [22
 
- <./example2.png>] [23
+ <./example6.png>] [23
 
 ]
 File: example6.png Graphic file (type png)
 <use example6.png>
-Package pdftex.def Info: example6.png  used on input line 523.
+Package pdftex.def Info: example6.png  used on input line 526.
 (pdftex.def)             Requested size: 123.22592pt x 122.349pt.
  [24
 
 ]
-<example7.jpg, id=756, 207.77625pt x 134.5025pt>
+<example7.jpg, id=771, 207.77625pt x 134.5025pt>
 File: example7.jpg Graphic file (type jpg)
 <use example7.jpg>
-Package pdftex.def Info: example7.jpg  used on input line 537.
+Package pdftex.def Info: example7.jpg  used on input line 540.
 (pdftex.def)             Requested size: 136.91603pt x 88.6344pt.
  [25
 
  <./example7.jpg>]
-<starvation.jpg, id=783, 361.35pt x 150.5625pt>
+<starvation.jpg, id=798, 361.35pt x 150.5625pt>
 File: starvation.jpg Graphic file (type jpg)
 <use starvation.jpg>
-Package pdftex.def Info: starvation.jpg  used on input line 548.
+Package pdftex.def Info: starvation.jpg  used on input line 551.
 (pdftex.def)             Requested size: 273.83728pt x 114.10014pt.
  [26
 
  <./starvation.jpg>] [27
 
+] [28
+
 ]
-<example9.png, id=837, 645.41125pt x 484.81125pt>
+<example9.png, id=878, 645.41125pt x 484.81125pt>
 File: example9.png Graphic file (type png)
 <use example9.png>
-Package pdftex.def Info: example9.png  used on input line 572.
+Package pdftex.def Info: example9.png  used on input line 580.
 (pdftex.def)             Requested size: 273.83728pt x 205.69806pt.
- [28
-
- <./example9.png>]
-<basic2pl.png, id=865, 926.46124pt x 906.38625pt>
-File: basic2pl.png Graphic file (type png)
-<use basic2pl.png>
-Package pdftex.def Info: basic2pl.png  used on input line 584.
-(pdftex.def)             Requested size: 136.91603pt x 133.94667pt.
-
-Overfull \vbox (0.10608pt too high) detected at line 584
- []
 
 [29
 
+ <./example9.png>]
+<basic2pl.png, id=906, 926.46124pt x 906.38625pt>
+File: basic2pl.png Graphic file (type png)
+<use basic2pl.png>
+Package pdftex.def Info: basic2pl.png  used on input line 592.
+(pdftex.def)             Requested size: 136.91603pt x 133.94667pt.
+
+Overfull \vbox (0.10608pt too high) detected at line 592
+ []
+
+[30
+
  <./basic2pl.png>]
-<conservative2pl.png, id=893, 1145.27875pt x 666.49pt>
+<conservative2pl.png, id=935, 1145.27875pt x 666.49pt>
 File: conservative2pl.png Graphic file (type png)
 <use conservative2pl.png>
-Package pdftex.def Info: conservative2pl.png  used on input line 597.
+Package pdftex.def Info: conservative2pl.png  used on input line 605.
 (pdftex.def)             Requested size: 188.26346pt x 109.55931pt.
- [30
-
- <./conservative2pl.png>]
-<strict2pl.png, id=922, 1046.91125pt x 362.35374pt>
-File: strict2pl.png Graphic file (type png)
-<use strict2pl.png>
-Package pdftex.def Info: strict2pl.png  used on input line 611.
-(pdftex.def)             Requested size: 205.37926pt x 71.08167pt.
  [31
 
+ <./conservative2pl.png>]
+<strict2pl.png, id=964, 1046.91125pt x 362.35374pt>
+File: strict2pl.png Graphic file (type png)
+<use strict2pl.png>
+Package pdftex.def Info: strict2pl.png  used on input line 619.
+(pdftex.def)             Requested size: 205.37926pt x 71.08167pt.
+ [32
+
  <./strict2pl.png>]
-<rigorous2pl.png, id=950, 989.6975pt x 368.37625pt>
+<rigorous2pl.png, id=991, 989.6975pt x 368.37625pt>
 File: rigorous2pl.png Graphic file (type png)
 <use rigorous2pl.png>
-Package pdftex.def Info: rigorous2pl.png  used on input line 624.
+Package pdftex.def Info: rigorous2pl.png  used on input line 632.
 (pdftex.def)             Requested size: 222.48985pt x 82.81361pt.
 
-[32
+[33
 
- <./rigorous2pl.png>] [33
-
-] [34
+ <./rigorous2pl.png>] [34
 
 ] [35
 
+] [36
+
+] [37
+
 ]
-<deadlockdetection1.jpg, id=1056, 319.9152pt x 210.0648pt>
+<deadlockdetection1.jpg, id=1123, 319.9152pt x 210.0648pt>
 File: deadlockdetection1.jpg Graphic file (type jpg)
 <use deadlockdetection1.jpg>
-Package pdftex.def Info: deadlockdetection1.jpg  used on input line 696.
+Package pdftex.def Info: deadlockdetection1.jpg  used on input line 713.
 (pdftex.def)             Requested size: 256.72147pt x 168.57132pt.
- [36
-
- <./deadlockdetection1.jpg>]
-[37
-
-]
-File: deadlockdetection1.jpg Graphic file (type jpg)
-<use deadlockdetection1.jpg>
-Package pdftex.def Info: deadlockdetection1.jpg  used on input line 736.
-(pdftex.def)             Requested size: 171.14764pt x 112.38194pt.
  [38
 
-]
-<completerollback.png, id=1137, 271.0125pt x 167.62625pt>
-File: completerollback.png Graphic file (type png)
-<use completerollback.png>
-Package pdftex.def Info: completerollback.png  used on input line 754.
-(pdftex.def)             Requested size: 171.14764pt x 105.86086pt.
- [39
+ <./deadlockdetection1.jpg>]
+[39
 
- <./completerollback.png>]
-<partialrollback.png, id=1163, 853.1875pt x 410.53375pt>
-File: partialrollback.png Graphic file (type png)
-<use partialrollback.png>
-Package pdftex.def Info: partialrollback.png  used on input line 769.
-(pdftex.def)             Requested size: 273.83728pt x 131.76813pt.
+]
+File: deadlockdetection1.jpg Graphic file (type jpg)
+<use deadlockdetection1.jpg>
+Package pdftex.def Info: deadlockdetection1.jpg  used on input line 752.
+(pdftex.def)             Requested size: 171.14764pt x 112.38194pt.
  [40
 
- <./partialrollback.png>] [41
+]
+<completerollback.png, id=1203, 271.0125pt x 167.62625pt>
+File: completerollback.png Graphic file (type png)
+<use completerollback.png>
+Package pdftex.def Info: completerollback.png  used on input line 770.
+(pdftex.def)             Requested size: 171.14764pt x 105.86086pt.
+ [41
+
+ <./completerollback.png>]
+<partialrollback.png, id=1229, 853.1875pt x 410.53375pt>
+File: partialrollback.png Graphic file (type png)
+<use partialrollback.png>
+Package pdftex.def Info: partialrollback.png  used on input line 785.
+(pdftex.def)             Requested size: 273.83728pt x 131.76813pt.
+ [42
+
+ <./partialrollback.png>] [43
 
 ]
-<granularitytree.png, id=1217, 787.94376pt x 371.3875pt>
+[44
+
+]
+<granularitytree.png, id=1310, 787.94376pt x 371.3875pt>
 File: granularitytree.png Graphic file (type png)
 <use granularitytree.png>
-Package pdftex.def Info: granularitytree.png  used on input line 800.
+Package pdftex.def Info: granularitytree.png  used on input line 823.
 (pdftex.def)             Requested size: 273.83728pt x 129.06952pt.
+ [45
 
-[42
-
- <./granularitytree.png>] [43
-
-] [44
-
-] [45
-
-] [46
+ <./granularitytree.png>] [46
 
 ] [47
 
@@ -1456,18 +1451,24 @@ Package pdftex.def Info: granularitytree.png  used on input line 800.
 
 ] [51
 
+] [52
+
+] [53
+
 ]
-<conclusion.png, id=1482, 652.4375pt x 359.3425pt>
+[54
+
+]
+<conclusion.png, id=1574, 652.4375pt x 359.3425pt>
 File: conclusion.png Graphic file (type png)
 <use conclusion.png>
-Package pdftex.def Info: conclusion.png  used on input line 988.
+Package pdftex.def Info: conclusion.png  used on input line 1011.
 (pdftex.def)             Requested size: 181.41609pt x 99.91885pt.
+ [55
 
-[52
+ <./conclusion.png>] [56
 
- <./conclusion.png>] [53
-
- </usr/share/texlive/texmf-dist/tex/latex/beamer/beamericonarticle.pdf>] [54
+ </usr/share/texlive/texmf-dist/tex/latex/beamer/beamericonarticle.pdf>] [57
 
 ]
 \tf@nav=\write6
@@ -1479,24 +1480,24 @@ Package pdftex.def Info: conclusion.png  used on input line 988.
 \tf@snm=\write8
 \openout8 = `presentation_1.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1035.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1035.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1058.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1058.
  (./presentation_1.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1035.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1035.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1058.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1058.
 
 Package rerunfilecheck Info: File `presentation_1.out' has not changed.
-(rerunfilecheck)             Checksum: 0B4349EB9345DC1C8A96AABCDE64E22C;868.
+(rerunfilecheck)             Checksum: 466D41AA7CA4516973828265E2A909D8;1104.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 18949 strings out of 492982
- 354037 string characters out of 6134895
- 441015 words of memory out of 5000000
- 21923 multiletter control sequences out of 15000+600000
+ 18969 strings out of 492982
+ 354233 string characters out of 6134895
+ 441016 words of memory out of 5000000
+ 21935 multiletter control sequences out of 15000+600000
  15185 words of font info for 54 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,16n,69p,781b,841s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1512,10 +1513,10 @@ ublic/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/sym
 bols/msam10.pfb>
-Output written on presentation_1.pdf (54 pages, 723503 bytes).
+Output written on presentation_1.pdf (57 pages, 708307 bytes).
 PDF statistics:
- 1647 PDF objects out of 1728 (max. 8388607)
- 1521 compressed objects within 16 object streams
- 129 named destinations out of 1000 (max. 500000)
- 264 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1741 PDF objects out of 2073 (max. 8388607)
+ 1613 compressed objects within 17 object streams
+ 138 named destinations out of 1000 (max. 500000)
+ 283 words of extra memory for PDF output out of 10000 (max. 10000000)
 

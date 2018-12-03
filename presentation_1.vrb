@@ -4,14 +4,12 @@
     \begin{verbatim}
         resource R;
         while (isLocked(R)) { sleep(); }
+
         if (this->getXLock(R)) {
-            this->write(R); } else {
-            if !(xLocked(R)) {
-                if (this->hasSLock(R)) {
-                    this->upgradeToXLock(R);
-                } else { this->getXLock(R); }
-                this->read(R); } }
-        this->commit();
-        this->release(R);
+            this->read(R);
+            this->write(R);
+            this->commit();
+            this->release(R);
+        }
     \end{verbatim}
     \end{example}

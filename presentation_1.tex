@@ -188,15 +188,21 @@
 
 %------------------------------------------------
 \section{Q9: Protocolos \emph{lock-based}}
-% Discuta os protocolos de controle de concorrência baseados em “Locks”,
-% mencionando em detalhes o protocolo “\emph{Two-Phase Locking) (2PL)”,
-% mencionando Shared/Exclusive (or Read/Write) locks,
-% conversão de locks (\emph{upgrade)/\emph{downgrade)), \emph{lock manager}, \emph{lock table),
-% questões de granularidade do lock etc.
-% Apresente as vantagens e desvantagens do protocolo de controle de concorrência 2PL,
-% mencionando como ele garante schedules seriais
-% e como evita os problemas da concorrência.
-%------------------------------------------------
+
+\subsection{Protocolos baseados em cadeados}
+
+\begin{frame}
+    \frametitle{Q9}
+    Discuta os protocolos de controle de concorrência baseados em “Locks”,
+    mencionando em detalhes o protocolo “\emph{Two-Phase Locking} (2PL)”,
+    mencionando Shared/Exclusive (or Read/Write) locks,
+    conversão de locks (\emph{upgrade}/\emph{downgrade}), \emph{lock manager}, \emph{lock table},
+    questões de granularidade do lock etc.
+    Apresente as vantagens e desvantagens do protocolo de controle de concorrência 2PL,
+    mencionando como ele garante schedules seriais
+    e como evita os problemas da concorrência.
+
+\end{frame}
 
 \begin{frame} % SLIDE 8
     \frametitle{Protocolos baseados em cadeados}
@@ -251,13 +257,11 @@
 
 %------------------------------------------------
 
-\subsection{Conversões de cadeados} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
-
 \begin{frame} % SLIDE 11
     \frametitle{\emph{Upgrades} e \emph{downgrades}}
 
     \begin{block}{\textbf{\emph{Upgrade}}: \emph{lock S} para \emph{lock X}}
-        Só é possível se não houver nenhuma outra transação com um cadeado exclusivo no recurso. Caso contrário, deverá entrar na fila e esperar que os cadeados exclusivos anteriores sejam liberados.
+        Só é possível se não houver nenhuma outra transação com um cadeado exclusivo no recurso. Caso contrário, deverá entrar na fila e esperar que os cadeados anteriores sejam liberados.
     \end{block}
 
     \medskip
@@ -326,17 +330,14 @@
     \begin{example}[Operação de leitura do recurso R]
     \begin{verbatim}
         resource R;
-        while (isLocked(R)) { sleep(); }
-        if (this->getLock(R)) {
+        while (isXLocked(R)) { sleep(); }
+        
+        if (this->getSLock(R)) {
             this->read(R);
-        } else {
-            if !(isXLocked(R)) {
-                this->getSLock(R);
-                this->read(R);
-            }
+            this->commit();
+            this->release(R);
         }
-        this->commit();
-        this->release(R);
+        
     \end{verbatim}
     \end{example}
 \end{frame}
@@ -350,20 +351,20 @@
     \begin{verbatim}
         resource R;
         while (isLocked(R)) { sleep(); }
+
         if (this->getXLock(R)) {
-            this->write(R); } else {
-            if !(xLocked(R)) {
-                if (this->hasSLock(R)) {
-                    this->upgradeToXLock(R);
-                } else { this->getXLock(R); }
-                this->read(R); } }
-        this->commit();
-        this->release(R);
+            this->read(R);
+            this->write(R);
+            this->commit();
+            this->release(R);
+        }
     \end{verbatim}
     \end{example}
 \end{frame}
 
 %------------------------------------------------
+
+\subsection{Gerenciador de concorrência}
 
 \begin{frame} % SLIDE 17
     \frametitle{Implementação}
@@ -440,6 +441,8 @@
 
 %------------------------------------------------
 
+\subsection{Vantagens e Desafios}
+
 \begin{frame} % SLIDE 21
     \frametitle{2PL: Vantagens}
 
@@ -458,14 +461,14 @@
 \end{frame}
 
 
-\begin{frame} % SLIDE 22
-    \frametitle{2PL: Vantagens}
+% \begin{frame} % SLIDE 22
+%     \frametitle{2PL: Vantagens}
 
-    \begin{figure}
-        \includegraphics[width=0.6\linewidth]{example2.png}
-    \end{figure}
+%     \begin{figure}
+%         \includegraphics[width=0.6\linewidth]{example2.png}
+%     \end{figure}
 
-\end{frame}
+% \end{frame}
 
 %------------------------------------------------
 
@@ -549,9 +552,14 @@
 
 %------------------------------------------------
 \section{Q10: Variantes do 2PL}
-% Discuta as variantes 2PL Normal, Conservativa, Estrita e Rigorosa.
 %------------------------------------------------
 
+\begin{frame}
+    \frametitle{Q10}
+
+    Discuta as variantes 2PL Normal, Conservativa, Estrita e Rigorosa.
+
+\end{frame}
 
 \begin{frame} % SLIDE 28
     \frametitle{2PL: Estratégias}
@@ -625,13 +633,22 @@
 
 %------------------------------------------------
 \section{Q11: Problemas e Prevenção}
-% Explique e exemplifique os problemas de “\emph{deadlock}” e “\emph{starvation)“
-% e os protocolos para as suas prevenções, mencionando detecção
-% e recuperação de \emph{deadlocks} e esquema baseados em \emph{timestamps}
-% ("\emph{wait-die)" e "\emph{wound-wait)").
+
 %------------------------------------------------
 
 %------------------------------------------------
+
+\begin{frame}
+    \frametitle{Q11}
+
+    Explique e exemplifique os problemas de “\emph{deadlock}” e “\emph{starvation}“
+    e os protocolos para as suas prevenções, mencionando detecção
+    e recuperação de \emph{deadlocks} e esquema baseados em \emph{timestamps}
+    ("\emph{wait-die}" e "\emph{wound-wait}").
+
+\end{frame}
+
+\subsection{Prevenção de \emph{deadlocks}}
 
 \begin{frame} % SLIDE 34
     \frametitle{Demais estratégias de prevenção de \emph{deadlocks}}
@@ -720,7 +737,6 @@
 
 \begin{frame} % SLIDE 39
     \frametitle{Detecção de \emph{deadlocks}}
-    % TODO: colocar em formato de demonstração matemática 2018-11-16 18:00:14
     \begin{theorem}
 
         Um escalonamento eficaz é um conjunto de operações sequenciais \(\{\, c_{j_{r}} \, | \, 1 \, \leq \, j \, \leq \, n, \, 1 \, \leq \, r \, \leq \, m\, \}\) que satisfazem estes critérios.
@@ -770,12 +786,19 @@
 
 %------------------------------------------------
 \section{Q12: Métodos de Acesso Indexado}
-% Discuta como os métodos de controle de concorrência baseado em locks
-% consideram o uso de métodos de acesso indexados,
-% comentando o nível de granularidade do lock através do índice;
+
 %------------------------------------------------
 
 %------------------------------------------------
+\begin{frame}
+    \frametitle{Q12}
+
+    Discuta como os métodos de controle de concorrência baseado em locks
+    consideram o uso de métodos de acesso indexados,
+    comentando o nível de granularidade do lock através do índice;
+
+\end{frame}
+
 \subsection{Granularidade múltipla}
 
 \begin{frame} % SLIDE 42
